@@ -1,0 +1,5 @@
+{
+  "project_name_override": "itsreg_api_client",
+  "package_name_override": "its_reg_api_client",
+  "post_hooks": []
+}
