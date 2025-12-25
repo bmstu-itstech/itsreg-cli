@@ -26,17 +26,22 @@ class ItsRegClient:
         response = self._client.get("bots")
         self._raise_if_error(response)
         payload = response.json()
-        raw_items = payload.get("bots") if isinstance(payload, dict) else payload
+        raw_items = payload
         return [Bot.model_validate(item) for item in raw_items or []]
 
     def create_bot(self, bot: Bot) -> Bot:
         payload = {
             "id": bot.id,
             "token": bot.token or "",
-            "script": bot.script.model_dump()
-            if bot.script
-            else {"nodes": [], "entries": []},
+            "script": (
+                bot.script.model_dump() if bot.script else {"nodes": [], "entries": []}
+            ),
         }
+        import json
+
+        print("\n=== DEBUG: Payload being sent to API ===")
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        print("=== End DEBUG ===\n")
         response = self._client.put("bots", json=payload)
         self._raise_if_error(response, payload)
         try:
@@ -69,6 +74,11 @@ class ItsRegClient:
         response = self._client.post(f"bots/{bot_id}/disable")
         self._raise_if_error(response)
 
+    def get_bot_answers(self, bot_id: str) -> str:
+        response = self._client.get(f"bots/{bot_id}/answers", timeout=300.0)
+        self._raise_if_error(response)
+        return response.text
+
     def close(self) -> None:
         self._client.close()
 
@@ -80,6 +90,18 @@ class ItsRegClient:
         except httpx.HTTPStatusError as exc:
             detail = exc.response.text
             payload_info = f" | Request: {request_payload}" if request_payload else ""
+            if exc.response.status_code >= 500:
+                import json
+
+                print("\n=== SERVER ERROR DEBUG ===")
+                print(f"Status: {exc.response.status_code}")
+                print(f"Response text: {detail}")
+                print(f"Response headers: {dict(exc.response.headers)}")
+                if request_payload:
+                    print(
+                        f"Sent payload: {json.dumps(request_payload, indent=2, ensure_ascii=False)}"
+                    )
+                print("=== End Debug ===\n")
             raise ApiError(
                 f"API error {exc.response.status_code}: {detail}{payload_info}"
             ) from exc

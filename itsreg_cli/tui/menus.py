@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import csv
+import io
 import json
+from datetime import datetime
 from typing import List
 
 import questionary
 from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
 from itsreg_cli.domain.models import Bot
@@ -57,18 +61,27 @@ def show_bot_details(service: BotService, bot_id: str) -> None:
         bot = service.get_bot(bot_id)
         console.print(f"Детали бота {bot.id}", style="cyan")
         console.print(f"Статус: {bot.status}, Включен: {bot.enabled}")
-        console.print("Сценарий:")
-        console.print_json(json.dumps(bot.script.model_dump(), ensure_ascii=False))
+        nodes_count = len(bot.script.nodes) if bot.script and bot.script.nodes else 0
+        entries_count = (
+            len(bot.script.entries) if bot.script and bot.script.entries else 0
+        )
+        console.print(f"Узлов в сценарии: {nodes_count}, Точек входа: {entries_count}")
         action = questionary.select(
             "Действие:",
             choices=[
+                "Показать сценарий",
                 "Включить автозапуск",
                 "Выключить автозапуск",
+                "Экспорт ответов",
                 "Удалить бота",
                 "Назад",
             ],
         ).ask()
-        if action == "Включить автозапуск":
+        if action == "Показать сценарий":
+            console.print("Сценарий:", style="cyan")
+            console.print_json(json.dumps(bot.script.model_dump(), ensure_ascii=False))
+            input("\nНажмите Enter для продолжения...")
+        elif action == "Включить автозапуск":
             try:
                 service.enable_bot(bot_id)
                 console.print("Включено в автозапуск.", style="green")
@@ -80,6 +93,8 @@ def show_bot_details(service: BotService, bot_id: str) -> None:
                 console.print("Удалён из автозапуска.", style="yellow")
             except Exception as e:
                 console.print(f"Ошибка: {e}", style="red")
+        elif action == "Экспорт ответов":
+            export_bot_answers(service, bot_id)
         elif action == "Удалить бота":
             if questionary.confirm(f"Удалить бота '{bot_id}'?", default=False).ask():
                 try:
@@ -90,6 +105,65 @@ def show_bot_details(service: BotService, bot_id: str) -> None:
                     console.print(f"Ошибка: {e}", style="red")
         else:
             break
+
+
+def export_bot_answers(service: BotService, bot_id: str) -> None:
+    try:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            task = progress.add_task(
+                "Загрузка ответов с сервера (может занять несколько минут)...",
+                total=None,
+            )
+            csv_data = service.get_bot_answers(bot_id)
+            progress.update(task, completed=True)
+
+        if not csv_data.strip():
+            console.print("Нет ответов для экспорта.", style="yellow")
+            return
+
+        reader = csv.reader(io.StringIO(csv_data))
+        rows = list(reader)
+
+        if not rows:
+            console.print("Нет ответов для экспорта.", style="yellow")
+            return
+
+        table = Table(title=f"Ответы на бота {bot_id}")
+        headers = rows[0] if rows else []
+        for header in headers:
+            table.add_column(header, overflow="fold")
+
+        for row in rows[1:]:
+            table.add_row(*row)
+
+        console.print(table)
+
+        if questionary.confirm("Сохранить в CSV файл?", default=True).ask():
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{bot_id}_answers_{timestamp}.csv"
+            with open(filename, "w", encoding="utf-8") as f:
+                f.write(csv_data)
+            console.print(f"Сохранено в {filename}", style="green")
+
+    except Exception as e:
+        error_msg = str(e)
+        if "504" in error_msg or "Gateway Time-out" in error_msg:
+            console.print(
+                "Ошибка: Сервер не успел обработать запрос (504 Gateway Timeout).",
+                style="red",
+            )
+            console.print("Это серверная проблема. Возможные решения:", style="yellow")
+            console.print("1. Попробуйте позже, когда на сервере меньше нагрузки")
+            console.print(
+                "2. Обратитесь к администраторам для увеличения timeout на сервере"
+            )
+            console.print("3. Используйте веб-интерфейс для экспорта")
+        else:
+            console.print(f"Ошибка при экспорте: {e}", style="red")
 
 
 def _render_bots_table(bots: List[Bot]) -> None:
