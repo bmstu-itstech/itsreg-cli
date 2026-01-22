@@ -1,0 +1,129 @@
+{
+  "id": "",
+  "token": "",
+  "script": {
+    "nodes": [
+      {
+        "state": 6,
+        "title": "state-6",
+        "messages": [
+          {
+            "text": "конец"
+          }
+        ],
+        "edges": [],
+        "options": []
+      },
+      {
+        "state": 5,
+        "title": "точно",
+        "messages": [
+          {
+            "text": "точно"
+          }
+        ],
+        "edges": [
+          {
+            "predicate": {
+              "type": "always"
+            },
+            "to": 6,
+            "operation": "append"
+          }
+        ],
+        "options": [
+          "да",
+          "нет",
+          "возможно"
+        ]
+      },
+      {
+        "state": 4,
+        "title": "хотите получать уведомление о дне рождения",
+        "messages": [
+          {
+            "text": "хотите получать уведомление о дне рождения"
+          }
+        ],
+        "edges": [
+          {
+            "predicate": {
+              "type": "always"
+            },
+            "to": 5,
+            "operation": "save"
+          }
+        ],
+        "options": []
+      },
+      {
+        "state": 3,
+        "title": "введите группу",
+        "messages": [
+          {
+            "text": "введите группу"
+          },
+          {
+            "text": "ну же"
+          }
+        ],
+        "edges": [
+          {
+            "predicate": {
+              "type": "regex",
+              "pattern": "[А-Я]+-[1-9][0-9]."
+            },
+            "to": 4,
+            "operation": "save"
+          }
+        ],
+        "options": []
+      },
+      {
+        "state": 2,
+        "title": "введите имя",
+        "messages": [
+          {
+            "text": "введите имя"
+          }
+        ],
+        "edges": [
+          {
+            "predicate": {
+              "type": "always"
+            },
+            "to": 3,
+            "operation": "save"
+          }
+        ],
+        "options": []
+      },
+      {
+        "state": 1,
+        "title": "введите свой возраст",
+        "messages": [
+          {
+            "text": "введите свой возраст"
+          }
+        ],
+        "edges": [
+          {
+            "predicate": {
+              "type": "regex",
+              "pattern": "[0-9]+"
+            },
+            "to": 2,
+            "operation": "save"
+          }
+        ],
+        "options": []
+      }
+    ],
+    "entries": [
+      {
+        "key": "start",
+        "start": 1
+      }
+    ]
+  }
+}
