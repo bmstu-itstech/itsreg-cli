@@ -157,7 +157,6 @@ itsreg-cli/
 │   └── openapi/
 │       └── bots.yaml   # OpenAPI спецификация
 ├── requirements.txt    # Зависимости для запуска
-├── requirements-dev.txt # Зависимости для разработки
 ├── Makefile           # Команды для разработки
 ├── .pre-commit-config.yaml  # Настройки pre-commit хуков
 └── README.md          # Этот файл

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import sys
 
+import httpx
 from pydantic import ValidationError
 
 from itsreg_cli.api.client import ItsRegClient
@@ -25,10 +26,19 @@ def ensure_token(settings: Settings) -> None:
         raise SystemExit("ITSREG_JWT_TOKEN не задан")
 
 
+def ensure_api_available(api_url: str) -> None:
+    try:
+        with httpx.Client(timeout=5.0, follow_redirects=True) as client:
+            client.get(api_url)
+    except httpx.RequestError as exc:
+        raise SystemExit(f"API недоступно по адресу {api_url}: {exc}") from exc
+
+
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv or sys.argv[1:])
     try:
         settings = load_settings(cli_api_url=args.api_url, cli_jwt_token=args.jwt_token)
+        ensure_api_available(settings.api_url)
         ensure_token(settings)
     except ValidationError as exc:
         raise SystemExit("ITSREG_JWT_TOKEN не задан") from exc

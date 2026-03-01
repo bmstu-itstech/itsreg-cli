@@ -9,7 +9,6 @@ $(VENV):
 install: $(VENV)
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
-	$(PIP) install -r requirements-dev.txt
 	$(VENV)/bin/pre-commit install
 
 generate-client: $(VENV)
