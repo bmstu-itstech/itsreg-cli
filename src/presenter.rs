@@ -11,13 +11,13 @@ impl Presenter {
     pub fn new(viewer: Box<dyn Viewer>, api: Api) -> Self {
         Self { viewer, api }
     }
-    
+
     pub async fn list_bots(&self) -> Result<(), ApiError> {
         api::bots_api::get_bots(&self.api)
             .await
             .map(|bots| self.viewer.view_bots(&bots))
     }
-    
+
     pub async fn show_bot(&self, id: &str) -> Result<(), ApiError> {
         api::bots_api::get_bot(&self.api, id)
             .await
@@ -29,7 +29,7 @@ impl Presenter {
             .await
             .map(|scripts| self.viewer.view_scripts(&scripts))
     }
-    
+
     pub async fn show_script(&self, id: &str) -> Result<(), ApiError> {
         api::scripts_api::get_script(&self.api, id)
             .await

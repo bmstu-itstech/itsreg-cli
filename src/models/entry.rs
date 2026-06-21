@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct Entry {
     #[serde(rename = "key")]
     pub key: String,
-    
+
     #[serde(rename = "start")]
     pub start: i32,
 }

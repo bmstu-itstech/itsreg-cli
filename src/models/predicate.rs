@@ -4,17 +4,17 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum Predicate {
-    #[serde(rename="always")]
+    #[serde(rename = "always")]
     Always(Box<models::AlwaysPredicate>),
-    
-    #[serde(rename="exact")]
+
+    #[serde(rename = "exact")]
     Exact(Box<models::ExactPredicate>),
-    
-    #[serde(rename="regex")]
+
+    #[serde(rename = "regex")]
     Regex(Box<models::RegexPredicate>),
 
     #[serde(untagged)]
-    Unknown(serde_json::Value)
+    Unknown(serde_json::Value),
 }
 
 impl Default for Predicate {
@@ -22,5 +22,3 @@ impl Default for Predicate {
         Self::Always(Default::default())
     }
 }
-
-

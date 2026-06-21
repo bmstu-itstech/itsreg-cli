@@ -5,10 +5,10 @@ use serde::{Deserialize, Serialize};
 pub struct Edge {
     #[serde(rename = "predicate")]
     pub predicate: Box<models::Predicate>,
-    
+
     #[serde(rename = "to")]
     pub to: i32,
-    
+
     #[serde(rename = "operation")]
     pub operation: Operation,
 }
@@ -28,4 +28,3 @@ impl Default for Operation {
         Self::Noop
     }
 }
-

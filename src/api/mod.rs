@@ -1,11 +1,7 @@
 pub mod bots_api;
 pub mod scripts_api;
 
-static APP_USER_AGENT: &str = concat!(
-    env!("CARGO_PKG_NAME"),
-    "/",
-    env!("CARGO_PKG_VERSION"),
-);
+static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
 #[derive(Debug, Clone)]
 pub struct Api {
@@ -19,8 +15,12 @@ impl Api {
         let client = reqwest::Client::builder()
             .user_agent(APP_USER_AGENT)
             .build()
-            .unwrap();  // should not fail if APP_USER_AGENT is valid
-        Self { client, base_url, bearer_access_token }
+            .unwrap(); // should not fail if APP_USER_AGENT is valid
+        Self {
+            client,
+            base_url,
+            bearer_access_token,
+        }
     }
 }
 
