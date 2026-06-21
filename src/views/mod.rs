@@ -1,6 +1,7 @@
 use crate::models::{Bot, Script};
 
 pub mod json_view;
+pub mod pretty_view;
 pub mod table_view;
 
 pub trait Viewer {
@@ -9,4 +10,12 @@ pub trait Viewer {
     fn view_bot_id(&self, id: &str);
     fn view_script(&self, script: &Script);
     fn view_scripts(&self, scripts: &[Script]);
+}
+
+fn truncate_with_dots(s: &str, max_chars: usize) -> String {
+    if s.chars().count() <= max_chars {
+        return s.to_string();
+    }
+    // Take the first N characters and append three dots
+    format!("{}...", s.chars().take(max_chars).collect::<String>())
 }

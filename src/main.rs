@@ -15,11 +15,13 @@ use crate::api::{Api, ApiError};
 use crate::presenter::Presenter;
 use crate::views::Viewer;
 use crate::views::json_view::JsonViewer;
+use crate::views::pretty_view::PrettyViewer;
 use crate::views::table_view::TableViewer;
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 enum OutputFormat {
     Table,
+    Pretty,
     Json,
 }
 
@@ -90,8 +92,9 @@ async fn main() -> ExitCode {
     let cli: Cli = Cli::parse();
 
     let viewer: Box<dyn Viewer> = match cli.format {
-        OutputFormat::Table => Box::new(TableViewer::new(true)),
+        OutputFormat::Table => Box::new(TableViewer),
         OutputFormat::Json => Box::new(JsonViewer),
+        OutputFormat::Pretty => Box::new(PrettyViewer::new(true)),
     };
 
     let api = Api::new(cli.api_url, cli.token);
