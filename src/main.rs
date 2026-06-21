@@ -7,16 +7,16 @@ mod views;
 use std::fmt::Debug;
 use std::process::ExitCode;
 
-use clap::Error as ClapError;
-use clap::error::ErrorKind as ClapErrorKind;
-use clap::{Parser, Subcommand, ValueEnum};
-
 use crate::api::{Api, ApiError};
 use crate::controller::Controller;
 use crate::views::Viewer;
 use crate::views::json_view::JsonViewer;
 use crate::views::pretty_view::PrettyViewer;
 use crate::views::table_view::TableViewer;
+use clap::Error as ClapError;
+use clap::error::ErrorKind as ClapErrorKind;
+use clap::{Parser, Subcommand, ValueEnum};
+use console::Style;
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 enum OutputFormat {
@@ -71,7 +71,7 @@ enum BotsCommands {
         script_id: String,
 
         #[arg(long)]
-        token: String,
+        bot_token: String,
 
         #[arg(long)]
         desc: String,
@@ -106,7 +106,7 @@ async fn main() -> ExitCode {
             BotsCommands::Get { id } => ctrl.show_bot(&id).await,
             BotsCommands::Create {
                 script_id,
-                token,
+                bot_token: token,
                 desc,
             } => ctrl.create_bot(&script_id, &token, &desc).await,
         },
@@ -124,14 +124,20 @@ async fn main() -> ExitCode {
 
 fn handle_error(err: ApiError) -> ExitCode {
     let mut cmd = Cli::command();
+
+    let bold = Style::new().bold();
+    let highlight = Style::new().yellow().bold();
+
     match err {
         ApiError::InvalidInput(err) => {
             let mut msg = String::new();
-            msg.push_str(&format!("validation failed with {} errors", err.len()));
+            msg.push_str(&format!("validation failed with {} errors\n", err.len()));
             for det in err {
                 msg.push_str(&format!(
-                    "\n\tin field {}: {} (code {})",
-                    det.field, det.message, det.code
+                    "\n\tin field {}: {} (code '{}')",
+                    bold.apply_to(det.field),
+                    det.message,
+                    highlight.apply_to(det.code),
                 ));
             }
             ClapError::raw(ClapErrorKind::InvalidValue, msg)
@@ -143,12 +149,12 @@ fn handle_error(err: ApiError) -> ExitCode {
 
         ApiError::BotNotFound(id) => ClapError::raw(
             ClapErrorKind::InvalidValue,
-            format!("bot not found: {}", id),
+            format!("bot not found: {}", highlight.apply_to(id)),
         ),
 
         ApiError::ScriptNotFound(id) => ClapError::raw(
             ClapErrorKind::InvalidValue,
-            format!("script not found: {}", id),
+            format!("script not found: {}", highlight.apply_to(id)),
         ),
 
         ApiError::InternalServerError => ClapError::raw(ClapErrorKind::Io, "internal server error"),
