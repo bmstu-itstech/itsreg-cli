@@ -20,6 +20,10 @@ impl Viewer for JsonViewer {
         println!("{}", s);
     }
 
+    fn view_bot_id(&self, id: &str) {
+        println!("{}", id);
+    }
+
     fn view_script(&self, script: &Script) {
         let s = serde_json::to_string(script).unwrap_or_else(|e| {
             eprintln!("Failed to serialize script: {:?}", e);

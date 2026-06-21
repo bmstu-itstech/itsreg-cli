@@ -1,3 +1,5 @@
+use crate::models::ValidationError;
+
 pub mod bots_api;
 pub mod scripts_api;
 
@@ -26,6 +28,7 @@ impl Api {
 
 #[derive(Debug)]
 pub enum ApiError {
+    InvalidInput(ValidationError),
     BotNotFound(String),
     ScriptNotFound(String),
     Unauthorized,

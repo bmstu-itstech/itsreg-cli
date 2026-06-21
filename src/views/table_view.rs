@@ -68,6 +68,10 @@ impl Viewer for TableViewer {
             .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
     }
 
+    fn view_bot_id(&self, id: &str) {
+        println!("{}", id);
+    }
+
     fn view_script(&self, script: &Script) {
         let mut table = Table::new();
         if self.pretty {

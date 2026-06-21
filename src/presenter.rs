@@ -1,5 +1,6 @@
 use crate::api;
 use crate::api::{Api, ApiError};
+use crate::models::CreateBotRequest;
 use crate::views::Viewer;
 
 pub struct Presenter {
@@ -22,6 +23,22 @@ impl Presenter {
         api::bots_api::get_bot(&self.api, id)
             .await
             .map(|bot| self.viewer.view_bot(&bot))
+    }
+
+    pub async fn create_bot(
+        &self,
+        script_id: &str,
+        token: &str,
+        desc: &str,
+    ) -> Result<(), ApiError> {
+        let req = CreateBotRequest {
+            script_id: script_id.to_owned(),
+            token: token.to_owned(),
+            desc: desc.to_owned(),
+        };
+        api::bots_api::create_bot(&self.api, req)
+            .await
+            .map(|res| self.viewer.view_bot_id(&res.bot_id))
     }
 
     pub async fn list_scripts(&self) -> Result<(), ApiError> {

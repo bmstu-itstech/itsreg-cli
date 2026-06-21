@@ -59,20 +59,35 @@ enum Commands {
 
 #[derive(Subcommand)]
 enum BotsCommands {
+    #[clap(alias = "ls")]
     List,
-    Get { id: String },
+    Get {
+        id: String,
+    },
+    Create {
+        #[arg(long)]
+        script_id: String,
+
+        #[arg(long)]
+        token: String,
+
+        #[arg(long)]
+        desc: String,
+    },
 }
 
 #[derive(Subcommand)]
 enum ScriptsCommands {
+    #[clap(alias = "ls")]
     List,
-    Get { id: String },
+    Get {
+        id: String,
+    },
 }
 
 #[tokio::main]
 async fn main() -> ExitCode {
     let cli: Cli = Cli::parse();
-    let mut cmd = Cli::command();
 
     let viewer: Box<dyn Viewer> = match cli.format {
         OutputFormat::Table => Box::new(TableViewer::new(true)),
@@ -85,50 +100,66 @@ async fn main() -> ExitCode {
     let res = match cli.command {
         Commands::Bots { action } => match action {
             BotsCommands::List => presenter.list_bots().await,
-            BotsCommands::Get { id } => presenter.show_bot(id.as_str()).await,
+            BotsCommands::Get { id } => presenter.show_bot(&id).await,
+            BotsCommands::Create {
+                script_id,
+                token,
+                desc,
+            } => presenter.create_bot(&script_id, &token, &desc).await,
         },
         Commands::Scripts { action } => match action {
             ScriptsCommands::List => presenter.list_scripts().await,
-            ScriptsCommands::Get { id } => presenter.show_script(id.as_str()).await,
+            ScriptsCommands::Get { id } => presenter.show_script(&id).await,
         },
     };
 
     match res {
         Ok(_) => ExitCode::SUCCESS,
-        Err(err) => {
-            match err {
-                ApiError::Unauthorized => {
-                    ClapError::raw(ClapErrorKind::InvalidValue, "token is expired or invalid")
-                }
-
-                ApiError::BotNotFound(id) => ClapError::raw(
-                    ClapErrorKind::InvalidValue,
-                    format!("bot not found: {}", id),
-                ),
-
-                ApiError::ScriptNotFound(id) => ClapError::raw(
-                    ClapErrorKind::InvalidValue,
-                    format!("script not found: {}", id),
-                ),
-
-                ApiError::InternalServerError => {
-                    ClapError::raw(ClapErrorKind::Io, "internal server error")
-                }
-
-                ApiError::Unknown(msg) => ClapError::raw(ClapErrorKind::InvalidValue, msg),
-
-                ApiError::Reqwest(reqwest_err) => {
-                    ClapError::raw(ClapErrorKind::Io, reqwest_err.to_string())
-                }
-
-                ApiError::Serde(reqwest_err) => {
-                    ClapError::raw(ClapErrorKind::Io, reqwest_err.to_string())
-                }
-            }
-            .format(&mut cmd)
-            .print()
-            .expect("Something went wrong");
-            ExitCode::FAILURE
-        }
+        Err(err) => handle_error(err),
     }
+}
+
+fn handle_error(err: ApiError) -> ExitCode {
+    let mut cmd = Cli::command();
+    match err {
+        ApiError::InvalidInput(err) => {
+            let mut msg = String::new();
+            msg.push_str(&format!("validation failed with {} errors", err.len()));
+            for det in err {
+                msg.push_str(&format!(
+                    "\n\tin field {}: {} (code {})",
+                    det.field, det.message, det.code
+                ));
+            }
+            ClapError::raw(ClapErrorKind::InvalidValue, msg)
+        }
+
+        ApiError::Unauthorized => {
+            ClapError::raw(ClapErrorKind::InvalidValue, "token is expired or invalid")
+        }
+
+        ApiError::BotNotFound(id) => ClapError::raw(
+            ClapErrorKind::InvalidValue,
+            format!("bot not found: {}", id),
+        ),
+
+        ApiError::ScriptNotFound(id) => ClapError::raw(
+            ClapErrorKind::InvalidValue,
+            format!("script not found: {}", id),
+        ),
+
+        ApiError::InternalServerError => ClapError::raw(ClapErrorKind::Io, "internal server error"),
+
+        ApiError::Unknown(msg) => ClapError::raw(ClapErrorKind::InvalidValue, msg),
+
+        ApiError::Reqwest(reqwest_err) => {
+            ClapError::raw(ClapErrorKind::Io, reqwest_err.to_string())
+        }
+
+        ApiError::Serde(reqwest_err) => ClapError::raw(ClapErrorKind::Io, reqwest_err.to_string()),
+    }
+    .format(&mut cmd)
+    .print()
+    .expect("Something went wrong");
+    ExitCode::FAILURE
 }

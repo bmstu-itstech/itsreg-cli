@@ -1,5 +1,7 @@
 mod always_predicate;
 mod bot;
+mod create_bot_request;
+mod create_bot_response;
 mod edge;
 mod entry;
 mod exact_predicate;
@@ -9,9 +11,13 @@ mod plain_error;
 mod predicate;
 mod regex_predicate;
 mod script;
+mod validation_error;
+mod validation_error_detail;
 
 pub use always_predicate::*;
 pub use bot::*;
+pub use create_bot_request::*;
+pub use create_bot_response::*;
 pub use edge::*;
 pub use entry::*;
 pub use exact_predicate::*;
@@ -20,3 +26,4 @@ pub use node::*;
 pub use predicate::*;
 pub use regex_predicate::*;
 pub use script::*;
+pub use validation_error::*;
