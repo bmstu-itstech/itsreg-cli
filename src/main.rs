@@ -7,16 +7,17 @@ mod views;
 use std::fmt::Debug;
 use std::process::ExitCode;
 
+use clap::Error as ClapError;
+use clap::error::ErrorKind as ClapErrorKind;
+use clap::{Parser, Subcommand, ValueEnum};
+use console::Style;
+
 use crate::api::{Api, ApiError};
 use crate::controller::Controller;
 use crate::views::Viewer;
 use crate::views::json_view::JsonViewer;
 use crate::views::pretty_view::PrettyViewer;
 use crate::views::table_view::TableViewer;
-use clap::Error as ClapError;
-use clap::error::ErrorKind as ClapErrorKind;
-use clap::{Parser, Subcommand, ValueEnum};
-use console::Style;
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 enum OutputFormat {
@@ -63,9 +64,11 @@ enum Commands {
 enum BotsCommands {
     #[clap(alias = "ls")]
     List,
+
     Get {
         id: String,
     },
+
     Create {
         #[arg(long)]
         script_id: String,
@@ -75,6 +78,24 @@ enum BotsCommands {
 
         #[arg(long)]
         desc: String,
+    },
+
+    Update {
+        id: String,
+
+        #[arg(long)]
+        script_id: Option<String>,
+
+        #[arg(long)]
+        bot_token: Option<String>,
+
+        #[arg(long)]
+        desc: Option<String>,
+    },
+
+    #[clap(alias = "rm")]
+    Remove {
+        id: String,
     },
 }
 
@@ -106,9 +127,16 @@ async fn main() -> ExitCode {
             BotsCommands::Get { id } => ctrl.show_bot(&id).await,
             BotsCommands::Create {
                 script_id,
-                bot_token: token,
+                bot_token,
                 desc,
-            } => ctrl.create_bot(&script_id, &token, &desc).await,
+            } => ctrl.create_bot(&script_id, &bot_token, &desc).await,
+            BotsCommands::Update {
+                id,
+                script_id,
+                bot_token,
+                desc,
+            } => ctrl.update_bot(id, script_id, bot_token, desc).await,
+            BotsCommands::Remove { id } => ctrl.delete_bot(&id).await,
         },
         Commands::Scripts { action } => match action {
             ScriptsCommands::List => ctrl.list_scripts().await,

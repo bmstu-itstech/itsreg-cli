@@ -1,6 +1,6 @@
 use crate::api;
 use crate::api::{Api, ApiError};
-use crate::models::CreateBotRequest;
+use crate::models::{CreateBotRequest, UpdateBotRequest};
 use crate::views::Viewer;
 
 pub struct Controller {
@@ -39,6 +39,29 @@ impl Controller {
         api::bots_api::create_bot(&self.api, req)
             .await
             .map(|res| self.viewer.view_bot_id(&res.bot_id))
+    }
+
+    pub async fn update_bot(
+        &self,
+        bot_id: String,
+        script_id: Option<String>,
+        token: Option<String>,
+        desc: Option<String>,
+    ) -> Result<(), ApiError> {
+        let req = UpdateBotRequest {
+            script_id: script_id.map(|s| s.to_owned()),
+            token: token.map(|s| s.to_owned()),
+            desc: desc.map(|s| s.to_owned()),
+        };
+        api::bots_api::update_bot(&self.api, &bot_id, req)
+            .await
+            .map(|bot| self.viewer.view_bot(&bot))
+    }
+
+    pub async fn delete_bot(&self, bot_id: &str) -> Result<(), ApiError> {
+        api::bots_api::delete_bot(&self.api, bot_id)
+            .await
+            .map(|_| self.viewer.view_bot_id(bot_id))
     }
 
     pub async fn list_scripts(&self) -> Result<(), ApiError> {

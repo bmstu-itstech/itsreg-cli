@@ -11,6 +11,7 @@ mod plain_error;
 mod predicate;
 mod regex_predicate;
 mod script;
+mod update_bot_request;
 mod validation_error;
 mod validation_error_detail;
 
@@ -26,4 +27,5 @@ pub use node::*;
 pub use predicate::*;
 pub use regex_predicate::*;
 pub use script::*;
+pub use update_bot_request::*;
 pub use validation_error::*;
