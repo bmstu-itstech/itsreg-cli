@@ -1,7 +1,7 @@
 use clap::CommandFactory;
 mod api;
+mod controller;
 mod models;
-mod presenter;
 mod views;
 
 use std::fmt::Debug;
@@ -12,7 +12,7 @@ use clap::error::ErrorKind as ClapErrorKind;
 use clap::{Parser, Subcommand, ValueEnum};
 
 use crate::api::{Api, ApiError};
-use crate::presenter::Presenter;
+use crate::controller::Controller;
 use crate::views::Viewer;
 use crate::views::json_view::JsonViewer;
 use crate::views::pretty_view::PrettyViewer;
@@ -98,21 +98,21 @@ async fn main() -> ExitCode {
     };
 
     let api = Api::new(cli.api_url, cli.token);
-    let presenter = Presenter::new(viewer, api);
+    let ctrl = Controller::new(viewer, api);
 
     let res = match cli.command {
         Commands::Bots { action } => match action {
-            BotsCommands::List => presenter.list_bots().await,
-            BotsCommands::Get { id } => presenter.show_bot(&id).await,
+            BotsCommands::List => ctrl.list_bots().await,
+            BotsCommands::Get { id } => ctrl.show_bot(&id).await,
             BotsCommands::Create {
                 script_id,
                 token,
                 desc,
-            } => presenter.create_bot(&script_id, &token, &desc).await,
+            } => ctrl.create_bot(&script_id, &token, &desc).await,
         },
         Commands::Scripts { action } => match action {
-            ScriptsCommands::List => presenter.list_scripts().await,
-            ScriptsCommands::Get { id } => presenter.show_script(&id).await,
+            ScriptsCommands::List => ctrl.list_scripts().await,
+            ScriptsCommands::Get { id } => ctrl.show_script(&id).await,
         },
     };
 

@@ -3,12 +3,12 @@ use crate::api::{Api, ApiError};
 use crate::models::CreateBotRequest;
 use crate::views::Viewer;
 
-pub struct Presenter {
+pub struct Controller {
     viewer: Box<dyn Viewer>,
     api: Api,
 }
 
-impl Presenter {
+impl Controller {
     pub fn new(viewer: Box<dyn Viewer>, api: Api) -> Self {
         Self { viewer, api }
     }
