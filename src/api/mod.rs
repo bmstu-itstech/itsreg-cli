@@ -1,4 +1,5 @@
 pub mod bots_api;
+pub mod scripts_api;
 
 static APP_USER_AGENT: &str = concat!(
     env!("CARGO_PKG_NAME"),
@@ -23,8 +24,10 @@ impl Api {
     }
 }
 
+#[derive(Debug)]
 pub enum ApiError {
     BotNotFound(String),
+    ScriptNotFound(String),
     Unauthorized,
     Unknown(String),
     InternalServerError,

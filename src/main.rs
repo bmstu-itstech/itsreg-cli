@@ -46,7 +46,11 @@ enum Commands {
     Bots {
         #[clap(subcommand)]
         action: BotsCommands
-    }
+    },
+    Scripts {
+        #[clap(subcommand)]
+        action: ScriptsCommands
+    },
 }
 
 #[derive(Subcommand)]
@@ -55,6 +59,14 @@ enum BotsCommands {
     Get {
         id: String,
     },
+}
+
+#[derive(Subcommand)]
+enum ScriptsCommands {
+    List,
+    Get {
+        id: String,
+    }
 }
 
 #[tokio::main]
@@ -74,7 +86,13 @@ async fn main() -> ExitCode {
         Commands::Bots { action } => {
             match action {
                 BotsCommands::List => presenter.list_bots().await,
-                BotsCommands::Get { id } => presenter.get_bot(id.as_str()).await,
+                BotsCommands::Get { id } => presenter.show_bot(id.as_str()).await,
+            }
+        }
+        Commands::Scripts { action } => {
+            match action { 
+                ScriptsCommands::List => presenter.list_scripts().await,
+                ScriptsCommands::Get { id } => presenter.show_script(id.as_str()).await,
             }
         }
     };
@@ -88,6 +106,9 @@ async fn main() -> ExitCode {
                 
                 ApiError::BotNotFound(id) =>
                     ClapError::raw(ClapErrorKind::InvalidValue, format!("bot not found: {}", id)),
+
+                ApiError::ScriptNotFound(id) =>
+                    ClapError::raw(ClapErrorKind::InvalidValue, format!("script not found: {}", id)),
                 
                 ApiError::InternalServerError =>
                     ClapError::raw(ClapErrorKind::Io, "internal server error"),

@@ -1,4 +1,4 @@
-use crate::models::Bot;
+use crate::models::{Bot, Script};
 use crate::views::Viewer;
 
 pub struct JsonViewer;
@@ -17,6 +17,24 @@ impl Viewer for JsonViewer {
         let s = serde_json::to_string(bots)
             .unwrap_or_else(|e| {
                 eprintln!("Failed to serialize bots: {:?}", e);
+                String::new()
+            });
+        println!("{}", s);
+    }
+
+    fn view_script(&self, script: &Script) {
+        let s = serde_json::to_string(script)
+            .unwrap_or_else(|e| {
+                eprintln!("Failed to serialize script: {:?}", e);
+                String::new()
+            });
+        println!("{}", s);
+    }
+
+    fn view_scripts(&self, scripts: &[Script]) {
+        let s = serde_json::to_string(scripts)
+            .unwrap_or_else(|e| {
+                eprintln!("Failed to serialize scripts: {:?}", e);
                 String::new()
             });
         println!("{}", s);

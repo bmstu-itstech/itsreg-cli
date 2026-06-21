@@ -18,9 +18,21 @@ impl Presenter {
             .map(|bots| self.viewer.view_bots(&bots))
     }
     
-    pub async fn get_bot(&self, id: &str) -> Result<(), ApiError> {
+    pub async fn show_bot(&self, id: &str) -> Result<(), ApiError> {
         api::bots_api::get_bot(&self.api, id)
             .await
             .map(|bot| self.viewer.view_bot(&bot))
+    }
+
+    pub async fn list_scripts(&self) -> Result<(), ApiError> {
+        api::scripts_api::get_scripts(&self.api)
+            .await
+            .map(|scripts| self.viewer.view_scripts(&scripts))
+    }
+    
+    pub async fn show_script(&self, id: &str) -> Result<(), ApiError> {
+        api::scripts_api::get_script(&self.api, id)
+            .await
+            .map(|script| self.viewer.view_script(&script))
     }
 }

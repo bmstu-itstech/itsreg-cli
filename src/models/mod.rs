@@ -1,5 +1,22 @@
+mod always_predicate;
 mod bot;
+mod edge;
+mod entry;
+mod exact_predicate;
+mod message;
+mod node;
 mod plain_error;
+mod predicate;
+mod regex_predicate;
+mod script;
 
+pub use always_predicate::*;
 pub use bot::*;
-pub use plain_error::*;
+pub use edge::*;
+pub use entry::*;
+pub use exact_predicate::*;
+pub use message::*;
+pub use node::*;
+pub use predicate::*;
+pub use regex_predicate::*;
+pub use script::*;
