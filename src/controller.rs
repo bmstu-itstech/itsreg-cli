@@ -75,4 +75,10 @@ impl Controller {
             .await
             .map(|script| self.viewer.view_script(&script))
     }
+
+    pub async fn view_runs(&self) -> Result<(), ApiError> {
+        api::runs_api::get_runs(&self.api)
+            .await
+            .map(|runs| self.viewer.view_runs(&runs))
+    }
 }

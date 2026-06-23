@@ -58,6 +58,10 @@ enum Commands {
         #[clap(subcommand)]
         action: ScriptsCommands,
     },
+    Runs {
+        #[clap(subcommand)]
+        action: RunsCommands,
+    },
 }
 
 #[derive(Subcommand)]
@@ -108,6 +112,12 @@ enum ScriptsCommands {
     },
 }
 
+#[derive(Subcommand)]
+enum RunsCommands {
+    #[clap(alias = "ls")]
+    List,
+}
+
 #[tokio::main]
 async fn main() -> ExitCode {
     let cli: Cli = Cli::parse();
@@ -115,7 +125,7 @@ async fn main() -> ExitCode {
     let viewer: Box<dyn Viewer> = match cli.format {
         OutputFormat::Table => Box::new(TableViewer),
         OutputFormat::Json => Box::new(JsonViewer),
-        OutputFormat::Pretty => Box::new(PrettyViewer::new(true)),
+        OutputFormat::Pretty => Box::new(PrettyViewer),
     };
 
     let api = Api::new(cli.api_url, cli.token);
@@ -141,6 +151,9 @@ async fn main() -> ExitCode {
         Commands::Scripts { action } => match action {
             ScriptsCommands::List => ctrl.list_scripts().await,
             ScriptsCommands::Get { id } => ctrl.show_script(&id).await,
+        },
+        Commands::Runs { action } => match action {
+            RunsCommands::List => ctrl.view_runs().await,
         },
     };
 

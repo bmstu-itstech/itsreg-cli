@@ -1,6 +1,6 @@
 use prettytable::{Table, format, row};
 
-use crate::models::{Bot, Script};
+use crate::models::{Bot, Run, Script};
 use crate::views::Viewer;
 use crate::views::truncate_with_dots;
 
@@ -109,6 +109,30 @@ impl Viewer for TableViewer {
                 script.entries.len(),
                 script.created_at.format(TIMESTAMP_FORMAT),
                 script.updated_at.format(TIMESTAMP_FORMAT),
+            ]);
+        }
+        table
+            .print_tty(false)
+            .map(|_| ())
+            .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
+    }
+
+    fn view_runs(&self, runs: &[Run]) {
+        let mut table = Table::new();
+        table.set_format(*format::consts::FORMAT_CLEAN);
+        table.add_row(row![b => "ID", "BOT_ID", "STATUS", "STARTED_AT", "STOPPED_AT", "ERROR"]);
+        for run in runs {
+            table.add_row(row![
+                run.id,
+                run.bot_id,
+                run.status,
+                run.started_at
+                    .map(|t| t.format(TIMESTAMP_FORMAT).to_string())
+                    .unwrap_or("N/A".into()),
+                run.stopped_at
+                    .map(|t| t.format(TIMESTAMP_FORMAT).to_string())
+                    .unwrap_or("N/A".into()),
+                run.error_msg.clone().unwrap_or_default()
             ]);
         }
         table

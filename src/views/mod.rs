@@ -1,4 +1,4 @@
-use crate::models::{Bot, Script};
+use crate::models::{Bot, Run, Script};
 
 pub mod json_view;
 pub mod pretty_view;
@@ -10,6 +10,7 @@ pub trait Viewer {
     fn view_bot_id(&self, id: &str);
     fn view_script(&self, script: &Script);
     fn view_scripts(&self, scripts: &[Script]);
+    fn view_runs(&self, runs: &[Run]);
 }
 
 fn truncate_with_dots(s: &str, max_chars: usize) -> String {
