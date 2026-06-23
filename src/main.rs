@@ -26,27 +26,39 @@ use crate::views::table_view::TableViewer;
 
 #[derive(ValueEnum, Clone, Debug, PartialEq, Eq)]
 enum OutputFormat {
+    #[clap(help = "Docker-like spaced table format")]
     Table,
+
+    #[clap(help = "Human-readable pretty-printed table format")]
     Pretty,
+
+    #[clap(help = "JSON format for machine processing")]
     Json,
 }
 
 #[derive(Parser)]
 #[command(name = "itsreg")]
 #[command(author = "Kirill Zhikharev")]
-#[command(about = "CLI client for itsreg API")]
+#[command(about = "CLI client for itsreg API - manage telegram bots")]
 struct Cli {
     #[arg(
         short = 'u',
+        long,
         env = "API_URL",
-        default_value = "https://itsreg.itsbmstu.ru/api/v3"
+        default_value = "https://itsreg.itsbmstu.ru/api/v3",
+        help = "Base API URL for itsreg service (including version)"
     )]
     api_url: String,
 
-    #[arg(short = 't', env = "TOKEN", help = "JWT token")]
+    #[arg(
+        short = 't',
+        long,
+        env = "TOKEN",
+        help = "JWT authentication token (can be set via TOKEN env var)"
+    )]
     token: String,
 
-    #[arg(short = 'f', default_value = "table")]
+    #[arg(short = 'f', long, default_value = "table", help = "Output format")]
     format: OutputFormat,
 
     #[command(subcommand)]
@@ -55,14 +67,19 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    #[clap(about = "Manage bots")]
     Bots {
         #[clap(subcommand)]
         action: BotsCommands,
     },
+
+    #[clap(about = "Manage scripts")]
     Scripts {
         #[clap(subcommand)]
         action: ScriptsCommands,
     },
+
+    #[clap(about = "Manage bot runs")]
     Runs {
         #[clap(subcommand)]
         action: RunsCommands,
@@ -72,38 +89,43 @@ enum Commands {
 #[derive(Subcommand)]
 enum BotsCommands {
     #[clap(alias = "ls")]
+    #[clap(about = "List all bots")]
     List,
 
-    Get {
-        id: String,
-    },
+    #[clap(about = "Get information about a specific bot")]
+    Get { id: String },
 
+    #[clap(about = "Create a new Telegram bot")]
     Create {
-        #[arg(long)]
+        #[arg(long, help = "ID of the script to associate with the bot")]
         script_id: String,
 
-        #[arg(long)]
+        #[arg(long, help = "Telegram bot token (obtain from @BotFather)")]
         bot_token: String,
 
-        #[arg(long)]
+        #[arg(long, help = "Description of the bot's purpose")]
         desc: String,
     },
 
+    #[clap(about = "Update an existing bot's configuration")]
     Update {
+        #[clap(help = "ID of the bot to update")]
         id: String,
 
-        #[arg(long)]
+        #[arg(long, help = "New script ID (optional)")]
         script_id: Option<String>,
 
-        #[arg(long)]
+        #[arg(long, help = "New bot token (optional)")]
         bot_token: Option<String>,
 
-        #[arg(long)]
+        #[arg(long, help = "New description (optional)")]
         desc: Option<String>,
     },
 
     #[clap(alias = "rm")]
+    #[clap(about = "Remove/delete a bot")]
     Remove {
+        #[clap(help = "ID of the bot to remove")]
         id: String,
     },
 }
@@ -111,12 +133,18 @@ enum BotsCommands {
 #[derive(Subcommand)]
 enum ScriptsCommands {
     #[clap(alias = "ls")]
+    #[clap(about = "List all available scripts")]
     List,
+
+    #[clap(about = "Get detailed information about a specific script")]
     Get {
+        #[clap(help = "ID of the script to retrieve")]
         id: String,
     },
+
+    #[clap(about = "Create a new script")]
     Create {
-        #[arg(long, short = 'i')]
+        #[arg(long, short = 'i', help = "Path to the script file to upload")]
         input: PathBuf,
     },
 }
@@ -124,6 +152,7 @@ enum ScriptsCommands {
 #[derive(Subcommand)]
 enum RunsCommands {
     #[clap(alias = "ls")]
+    #[clap(about = "List all bot runs")]
     List,
 }
 
