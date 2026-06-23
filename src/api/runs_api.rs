@@ -1,9 +1,10 @@
 use reqwest::StatusCode;
 
-use crate::api::{Api, ApiError};
+use crate::api::Api;
+use crate::error::CliError;
 use crate::models::Run;
 
-pub async fn get_runs(api: &Api) -> Result<Vec<Run>, ApiError> {
+pub async fn get_runs(api: &Api) -> Result<Vec<Run>, CliError> {
     let uri = format!("{}/runs", api.base_url);
     let req = api
         .client
@@ -16,12 +17,12 @@ pub async fn get_runs(api: &Api) -> Result<Vec<Run>, ApiError> {
     let content = resp.text().await?;
 
     if status.is_success() {
-        serde_json::from_str(content.as_str()).map_err(ApiError::from)
+        serde_json::from_str(content.as_str()).map_err(CliError::from)
     } else {
         match status {
-            StatusCode::UNAUTHORIZED => Err(ApiError::Unauthorized),
-            StatusCode::INTERNAL_SERVER_ERROR => Err(ApiError::InternalServerError),
-            _ => Err(ApiError::Unknown(content)),
+            StatusCode::UNAUTHORIZED => Err(CliError::Unauthorized),
+            StatusCode::INTERNAL_SERVER_ERROR => Err(CliError::InternalServerError),
+            _ => Err(CliError::Unknown(content)),
         }
     }
 }

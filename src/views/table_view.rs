@@ -13,7 +13,7 @@ impl Viewer for TableViewer {
     fn view_bot(&self, bot: &Bot) {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_CLEAN);
-        table.add_row(row![
+        table.add_row(row![b =>
             "ID",
             "OWNER_ID",
             "DESC",
@@ -37,7 +37,7 @@ impl Viewer for TableViewer {
     fn view_bots(&self, bots: &[Bot]) {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_CLEAN);
-        table.add_row(row![
+        table.add_row(row![b =>
             "ID",
             "OWNER_ID",
             "DESC",
@@ -68,7 +68,7 @@ impl Viewer for TableViewer {
     fn view_script(&self, script: &Script) {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-        table.add_row(row![
+        table.add_row(row![b =>
             "ID",
             "DESC",
             "ENTRIES",
@@ -93,7 +93,7 @@ impl Viewer for TableViewer {
     fn view_scripts(&self, scripts: &[Script]) {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_CLEAN);
-        table.add_row(row![
+        table.add_row(row![b =>
             "ID",
             "DESC",
             "ENTRIES",
@@ -115,6 +115,10 @@ impl Viewer for TableViewer {
             .print_tty(false)
             .map(|_| ())
             .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
+    }
+
+    fn view_script_id(&self, id: &str) {
+        println!("{}", id);
     }
 
     fn view_runs(&self, runs: &[Run]) {

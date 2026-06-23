@@ -1,10 +1,13 @@
 use clap::CommandFactory;
 mod api;
 mod controller;
+mod error;
 mod models;
+mod sources;
 mod views;
 
 use std::fmt::Debug;
+use std::path::PathBuf;
 use std::process::ExitCode;
 
 use clap::Error as ClapError;
@@ -12,8 +15,10 @@ use clap::error::ErrorKind as ClapErrorKind;
 use clap::{Parser, Subcommand, ValueEnum};
 use console::Style;
 
-use crate::api::{Api, ApiError};
+use crate::api::Api;
 use crate::controller::Controller;
+use crate::error::CliError;
+use crate::sources::file_source::FileSource;
 use crate::views::Viewer;
 use crate::views::json_view::JsonViewer;
 use crate::views::pretty_view::PrettyViewer;
@@ -110,6 +115,10 @@ enum ScriptsCommands {
     Get {
         id: String,
     },
+    Create {
+        #[arg(long, short = 'i')]
+        input: PathBuf,
+    },
 }
 
 #[derive(Subcommand)]
@@ -151,6 +160,10 @@ async fn main() -> ExitCode {
         Commands::Scripts { action } => match action {
             ScriptsCommands::List => ctrl.list_scripts().await,
             ScriptsCommands::Get { id } => ctrl.show_script(&id).await,
+            ScriptsCommands::Create { input } => {
+                let src = FileSource::new(&input);
+                ctrl.create_script(&src).await
+            }
         },
         Commands::Runs { action } => match action {
             RunsCommands::List => ctrl.view_runs().await,
@@ -163,14 +176,14 @@ async fn main() -> ExitCode {
     }
 }
 
-fn handle_error(err: ApiError) -> ExitCode {
+fn handle_error(err: CliError) -> ExitCode {
     let mut cmd = Cli::command();
 
     let bold = Style::new().bold();
     let highlight = Style::new().yellow().bold();
 
     match err {
-        ApiError::InvalidInput(err) => {
+        CliError::InvalidInput(err) => {
             let mut msg = String::new();
             msg.push_str(&format!("validation failed with {} errors\n", err.len()));
             for det in err {
@@ -184,29 +197,31 @@ fn handle_error(err: ApiError) -> ExitCode {
             ClapError::raw(ClapErrorKind::InvalidValue, msg)
         }
 
-        ApiError::Unauthorized => {
+        CliError::Unauthorized => {
             ClapError::raw(ClapErrorKind::InvalidValue, "token is expired or invalid")
         }
 
-        ApiError::BotNotFound(id) => ClapError::raw(
+        CliError::BotNotFound(id) => ClapError::raw(
             ClapErrorKind::InvalidValue,
             format!("bot not found: {}", highlight.apply_to(id)),
         ),
 
-        ApiError::ScriptNotFound(id) => ClapError::raw(
+        CliError::ScriptNotFound(id) => ClapError::raw(
             ClapErrorKind::InvalidValue,
             format!("script not found: {}", highlight.apply_to(id)),
         ),
 
-        ApiError::InternalServerError => ClapError::raw(ClapErrorKind::Io, "internal server error"),
+        CliError::InternalServerError => ClapError::raw(ClapErrorKind::Io, "internal server error"),
 
-        ApiError::Unknown(msg) => ClapError::raw(ClapErrorKind::InvalidValue, msg),
+        CliError::Unknown(msg) => ClapError::raw(ClapErrorKind::InvalidValue, msg),
 
-        ApiError::Reqwest(reqwest_err) => {
+        CliError::IO(io_err) => ClapError::raw(ClapErrorKind::Io, io_err.to_string()),
+
+        CliError::Reqwest(reqwest_err) => {
             ClapError::raw(ClapErrorKind::Io, reqwest_err.to_string())
         }
 
-        ApiError::Serde(reqwest_err) => ClapError::raw(ClapErrorKind::Io, reqwest_err.to_string()),
+        CliError::Serde(reqwest_err) => ClapError::raw(ClapErrorKind::Io, reqwest_err.to_string()),
     }
     .format(&mut cmd)
     .print()

@@ -100,6 +100,10 @@ impl Viewer for PrettyViewer {
             .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
     }
 
+    fn view_script_id(&self, id: &str) {
+        println!("{}", id);
+    }
+
     fn view_runs(&self, runs: &[Run]) {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_BOX_CHARS);
