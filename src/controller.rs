@@ -85,6 +85,19 @@ impl Controller {
             .map(|script| self.viewer.view_script(&script))
     }
 
+    pub async fn update_script(&self, id: &str, src: &dyn Source) -> Result<(), CliError> {
+        let script = src.input_script().map_err(CliError::IO)?;
+        api::scripts_api::update_script(&self.api, id, script)
+            .await
+            .map(|script| self.viewer.view_script(&script))
+    }
+
+    pub async fn delete_script(&self, id: &str) -> Result<(), CliError> {
+        api::scripts_api::delete_script(&self.api, id)
+            .await
+            .map(|_| self.viewer.view_script_id(id))
+    }
+
     pub async fn view_runs(&self) -> Result<(), CliError> {
         api::runs_api::get_runs(&self.api)
             .await

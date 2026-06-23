@@ -132,6 +132,12 @@ enum BotsCommands {
 
 #[derive(Subcommand)]
 enum ScriptsCommands {
+    #[clap(about = "Create a new script")]
+    Create {
+        #[arg(long, short = 'i', help = "Path to the script file")]
+        input: PathBuf,
+    },
+
     #[clap(alias = "ls")]
     #[clap(about = "List all available scripts")]
     List,
@@ -142,10 +148,19 @@ enum ScriptsCommands {
         id: String,
     },
 
-    #[clap(about = "Create a new script")]
-    Create {
-        #[arg(long, short = 'i', help = "Path to the script file to upload")]
+    Update {
+        #[clap(help = "Update an existent script")]
+        id: String,
+
+        #[clap(long, short = 'i', help = "Path to the script file")]
         input: PathBuf,
+    },
+
+    #[clap(alias = "rm")]
+    #[clap(about = "Remove/delete a script")]
+    Remove {
+        #[clap(help = "ID of the script to remove")]
+        id: String,
     },
 }
 
@@ -187,12 +202,17 @@ async fn main() -> ExitCode {
             BotsCommands::Remove { id } => ctrl.delete_bot(&id).await,
         },
         Commands::Scripts { action } => match action {
-            ScriptsCommands::List => ctrl.list_scripts().await,
-            ScriptsCommands::Get { id } => ctrl.show_script(&id).await,
             ScriptsCommands::Create { input } => {
                 let src = FileSource::new(&input);
                 ctrl.create_script(&src).await
             }
+            ScriptsCommands::List => ctrl.list_scripts().await,
+            ScriptsCommands::Get { id } => ctrl.show_script(&id).await,
+            ScriptsCommands::Update { id, input } => {
+                let src = FileSource::new(&input);
+                ctrl.update_script(&id, &src).await
+            }
+            ScriptsCommands::Remove { id } => ctrl.delete_script(&id).await,
         },
         Commands::Runs { action } => match action {
             RunsCommands::List => ctrl.view_runs().await,

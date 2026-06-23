@@ -1,8 +1,11 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
 pub enum RunStatus {
     #[serde(rename = "starting")]
+    #[default]
     Starting,
 
     #[serde(rename = "active")]
@@ -27,11 +30,5 @@ impl std::fmt::Display for RunStatus {
             Self::Stopping => write!(f, "stopping"),
             Self::Stopped => write!(f, "stopped"),
         }
-    }
-}
-
-impl Default for RunStatus {
-    fn default() -> RunStatus {
-        Self::Starting
     }
 }
