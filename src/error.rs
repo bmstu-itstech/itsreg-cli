@@ -5,6 +5,8 @@ pub enum CliError {
     InvalidInput(ValidationError),
     BotNotFound(String),
     ScriptNotFound(String),
+    BotAlreadyRunning(String),
+    RunNotFound(String),
     Unauthorized,
     Unknown(String),
     InternalServerError,

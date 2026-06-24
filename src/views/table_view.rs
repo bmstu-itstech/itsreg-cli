@@ -144,4 +144,8 @@ impl Viewer for TableViewer {
             .map(|_| ())
             .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
     }
+
+    fn view_run_id(&self, id: &str) {
+        println!("{}", id);
+    }
 }

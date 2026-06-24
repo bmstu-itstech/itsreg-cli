@@ -51,4 +51,8 @@ impl Viewer for JsonViewer {
         });
         println!("{}", s);
     }
+
+    fn view_run_id(&self, id: &str) {
+        println!("{}", id);
+    }
 }

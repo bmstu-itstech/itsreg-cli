@@ -12,6 +12,7 @@ pub trait Viewer {
     fn view_scripts(&self, scripts: &[Script]);
     fn view_script_id(&self, id: &str);
     fn view_runs(&self, runs: &[Run]);
+    fn view_run_id(&self, id: &str);
 }
 
 fn truncate_with_dots(s: &str, max_chars: usize) -> String {

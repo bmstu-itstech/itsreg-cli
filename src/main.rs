@@ -128,6 +128,12 @@ enum BotsCommands {
         #[clap(help = "ID of the bot to remove")]
         id: String,
     },
+
+    #[clap(about = "Create a run for a specifiec bot and start it")]
+    Start {
+        #[clap(help = "ID of the bot to start")]
+        id: String,
+    },
 }
 
 #[derive(Subcommand)]
@@ -169,6 +175,12 @@ enum RunsCommands {
     #[clap(alias = "ls")]
     #[clap(about = "List all bot runs")]
     List,
+
+    #[clap(about = "Stop a specific run")]
+    Stop {
+        #[clap(help = "ID of the run to stop")]
+        id: String,
+    },
 }
 
 #[tokio::main]
@@ -200,6 +212,7 @@ async fn main() -> ExitCode {
                 desc,
             } => ctrl.update_bot(id, script_id, bot_token, desc).await,
             BotsCommands::Remove { id } => ctrl.delete_bot(&id).await,
+            BotsCommands::Start { id } => ctrl.start_bot(&id).await,
         },
         Commands::Scripts { action } => match action {
             ScriptsCommands::Create { input } => {
@@ -216,6 +229,7 @@ async fn main() -> ExitCode {
         },
         Commands::Runs { action } => match action {
             RunsCommands::List => ctrl.view_runs().await,
+            RunsCommands::Stop { id } => ctrl.stop_run(&id).await,
         },
     };
 
@@ -258,6 +272,16 @@ fn handle_error(err: CliError) -> ExitCode {
         CliError::ScriptNotFound(id) => ClapError::raw(
             ClapErrorKind::InvalidValue,
             format!("script not found: {}", highlight.apply_to(id)),
+        ),
+
+        CliError::BotAlreadyRunning(id) => ClapError::raw(
+            ClapErrorKind::InvalidValue,
+            format!("bot already running: {}", highlight.apply_to(id)),
+        ),
+
+        CliError::RunNotFound(id) => ClapError::raw(
+            ClapErrorKind::InvalidValue,
+            format!("run not found: {}", highlight.apply_to(id)),
         ),
 
         CliError::InternalServerError => ClapError::raw(ClapErrorKind::Io, "internal server error"),

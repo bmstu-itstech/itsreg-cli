@@ -98,9 +98,21 @@ impl Controller {
             .map(|_| self.viewer.view_script_id(id))
     }
 
+    pub async fn start_bot(&self, bot_id: &str) -> Result<(), CliError> {
+        api::runs_api::create_run(&self.api, bot_id)
+            .await
+            .map(|res| self.viewer.view_run_id(&res.run_id))
+    }
+
     pub async fn view_runs(&self) -> Result<(), CliError> {
         api::runs_api::get_runs(&self.api)
             .await
             .map(|runs| self.viewer.view_runs(&runs))
+    }
+
+    pub async fn stop_run(&self, id: &str) -> Result<(), CliError> {
+        api::runs_api::stop_run(&self.api, id)
+            .await
+            .map(|_| self.viewer.view_run_id(id))
     }
 }
