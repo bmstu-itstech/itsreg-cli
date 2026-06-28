@@ -1,7 +1,7 @@
 use crate::api;
 use crate::api::Api;
 use crate::error::CliError;
-use crate::models::{CreateBotRequest, UpdateBotRequest};
+use crate::models::{CreateBotRequest, RunStatus, UpdateBotRequest};
 use crate::sources::Source;
 use crate::views::Viewer;
 
@@ -104,8 +104,12 @@ impl Controller {
             .map(|res| self.viewer.view_run_id(&res.run_id))
     }
 
-    pub async fn view_runs(&self) -> Result<(), CliError> {
-        api::runs_api::get_runs(&self.api)
+    pub async fn view_runs(
+        &self,
+        bot_id: Option<&str>,
+        status: Option<RunStatus>,
+    ) -> Result<(), CliError> {
+        api::runs_api::get_runs(&self.api, bot_id, status)
             .await
             .map(|runs| self.viewer.view_runs(&runs))
     }

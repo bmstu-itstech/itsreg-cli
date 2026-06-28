@@ -18,6 +18,7 @@ use console::Style;
 use crate::api::Api;
 use crate::controller::Controller;
 use crate::error::CliError;
+use crate::models::RunStatus;
 use crate::sources::file_source::FileSource;
 use crate::views::Viewer;
 use crate::views::json_view::JsonViewer;
@@ -34,6 +35,27 @@ enum OutputFormat {
 
     #[clap(help = "JSON format for machine processing")]
     Json,
+}
+
+#[derive(ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
+enum RunStatusCli {
+    Starting,
+    Active,
+    Failed,
+    Stopping,
+    Stopped,
+}
+
+impl From<RunStatusCli> for RunStatus {
+    fn from(value: RunStatusCli) -> Self {
+        match value {
+            RunStatusCli::Starting => Self::Starting,
+            RunStatusCli::Active => Self::Active,
+            RunStatusCli::Failed => Self::Failed,
+            RunStatusCli::Stopping => Self::Stopping,
+            RunStatusCli::Stopped => Self::Stopped,
+        }
+    }
 }
 
 #[derive(Parser)]
@@ -174,7 +196,13 @@ enum ScriptsCommands {
 enum RunsCommands {
     #[clap(alias = "ls")]
     #[clap(about = "List all bot runs")]
-    List,
+    List {
+        #[clap(long, help = "Filter runs by the bot ID")]
+        bot_id: Option<String>,
+
+        #[clap(long, help = "Filter runs with the status")]
+        status: Option<RunStatusCli>,
+    },
 
     #[clap(about = "Stop a specific run")]
     Stop {
@@ -228,7 +256,10 @@ async fn main() -> ExitCode {
             ScriptsCommands::Remove { id } => ctrl.delete_script(&id).await,
         },
         Commands::Runs { action } => match action {
-            RunsCommands::List => ctrl.view_runs().await,
+            RunsCommands::List { bot_id, status } => {
+                ctrl.view_runs(bot_id.as_deref(), status.map(Into::into))
+                    .await
+            }
             RunsCommands::Stop { id } => ctrl.stop_run(&id).await,
         },
     };
