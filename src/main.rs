@@ -204,6 +204,12 @@ enum RunsCommands {
         status: Option<RunStatusCli>,
     },
 
+    #[clap(about = "Get information about a specific run")]
+    Get {
+        #[clap(help = "ID of the run to retrieve")]
+        id: String,
+    },
+
     #[clap(about = "Stop a specific run")]
     Stop {
         #[clap(help = "ID of the run to stop")]
@@ -260,6 +266,7 @@ async fn main() -> ExitCode {
                 ctrl.view_runs(bot_id.as_deref(), status.map(Into::into))
                     .await
             }
+            RunsCommands::Get { id } => ctrl.show_run(&id).await,
             RunsCommands::Stop { id } => ctrl.stop_run(&id).await,
         },
     };

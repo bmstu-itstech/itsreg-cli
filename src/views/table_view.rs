@@ -121,6 +121,27 @@ impl Viewer for TableViewer {
         println!("{}", id);
     }
 
+    fn view_run(&self, run: &Run) {
+        let mut table = Table::new();
+        table.set_format(*format::consts::FORMAT_CLEAN);
+        table.add_row(row![b => "ID", "BOT_ID", "STATUS", "STARTED_AT", "STOPPED_AT", "ERROR"]);
+        table.add_row(row![
+            run.id,
+            run.bot_id,
+            run.status,
+            run.started_at
+                .map(|t| t.format(TIMESTAMP_FORMAT).to_string())
+                .unwrap_or("N/A".into()),
+            run.stopped_at
+                .map(|t| t.format(TIMESTAMP_FORMAT).to_string())
+                .unwrap_or("N/A".into()),
+        ]);
+        table
+            .print_tty(false)
+            .map(|_| ())
+            .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
+    }
+
     fn view_runs(&self, runs: &[Run]) {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_CLEAN);

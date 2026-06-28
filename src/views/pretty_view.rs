@@ -131,6 +131,31 @@ impl Viewer for PrettyViewer {
             .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
     }
 
+    fn view_run(&self, run: &Run) {
+        let mut table = Table::new();
+        table.set_format(*format::consts::FORMAT_BOX_CHARS);
+        table.add_row(row![b => "ID", "BotID", "Status", "StartedAt", "StoppedAt", "Error"]);
+        table.add_row(row![
+            run.id,
+            run.bot_id,
+            run.status,
+            run.started_at
+                .map(|t| t.format(TIMESTAMP_FORMAT).to_string())
+                .unwrap_or("N/A".into()),
+            run.stopped_at
+                .map(|t| t.format(TIMESTAMP_FORMAT).to_string())
+                .unwrap_or("N/A".into()),
+            run.error_msg
+                .clone()
+                .map(|s| wrap(&s, 80).join("\n"))
+                .unwrap_or_default()
+        ]);
+        table
+            .print_tty(false)
+            .map(|_| ())
+            .unwrap_or_else(|e| eprintln!("Failed to print to table: {:?}", e));
+    }
+
     fn view_run_id(&self, id: &str) {
         println!("{}", id);
     }

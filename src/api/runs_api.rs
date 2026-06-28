@@ -66,6 +66,30 @@ pub async fn get_runs(
     }
 }
 
+pub async fn get_run(api: &Api, id: &str) -> Result<Run, CliError> {
+    let uri = format!("{}/runs/{id}", api.base_url);
+    let req = api
+        .client
+        .request(reqwest::Method::GET, &uri)
+        .bearer_auth(api.bearer_access_token.clone())
+        .build()?;
+
+    let resp = api.client.execute(req).await?;
+    let status = resp.status();
+    let content = resp.text().await?;
+
+    if status.is_success() {
+        serde_json::from_str(content.as_str()).map_err(CliError::from)
+    } else {
+        match status {
+            StatusCode::UNAUTHORIZED => Err(CliError::Unauthorized),
+            StatusCode::NOT_FOUND => Err(CliError::RunNotFound(id.to_owned())),
+            StatusCode::INTERNAL_SERVER_ERROR => Err(CliError::InternalServerError),
+            _ => Err(CliError::Unknown(content)),
+        }
+    }
+}
+
 pub async fn stop_run(api: &Api, id: &str) -> Result<(), CliError> {
     let uri = format!("{}/runs/{id}/stop", api.base_url);
     let req = api

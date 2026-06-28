@@ -11,6 +11,7 @@ pub trait Viewer {
     fn view_script(&self, script: &Script);
     fn view_scripts(&self, scripts: &[Script]);
     fn view_script_id(&self, id: &str);
+    fn view_run(&self, run: &Run);
     fn view_runs(&self, runs: &[Run]);
     fn view_run_id(&self, id: &str);
 }

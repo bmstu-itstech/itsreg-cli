@@ -44,6 +44,14 @@ impl Viewer for JsonViewer {
         println!("{}", id);
     }
 
+    fn view_run(&self, run: &Run) {
+        let s = serde_json::to_string(run).unwrap_or_else(|e| {
+            eprintln!("Failed to serialize run: {:?}", e);
+            String::new()
+        });
+        println!("{}", s);
+    }
+
     fn view_runs(&self, runs: &[Run]) {
         let s = serde_json::to_string(runs).unwrap_or_else(|e| {
             eprintln!("Failed to serialize runs: {:?}", e);

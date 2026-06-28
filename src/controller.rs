@@ -114,6 +114,12 @@ impl Controller {
             .map(|runs| self.viewer.view_runs(&runs))
     }
 
+    pub async fn show_run(&self, id: &str) -> Result<(), CliError> {
+        api::runs_api::get_run(&self.api, id)
+            .await
+            .map(|run| self.viewer.view_run(&run))
+    }
+
     pub async fn stop_run(&self, id: &str) -> Result<(), CliError> {
         api::runs_api::stop_run(&self.api, id)
             .await
