@@ -72,8 +72,8 @@ impl Viewer for TableViewer {
             t.add_row(row![
                 script.id,
                 truncate_with_dots(&script.desc, COLUMN_MAX_LENGTH),
-                script.nodes.len(),
                 script.entries.len(),
+                script.nodes.len(),
                 script.created_at.format(TIMESTAMP_FORMAT),
                 script.updated_at.format(TIMESTAMP_FORMAT),
             ]);
@@ -94,8 +94,8 @@ impl Viewer for TableViewer {
                 t.add_row(row![
                     script.id,
                     truncate_with_dots(&script.desc, COLUMN_MAX_LENGTH),
-                    script.nodes.len(),
                     script.entries.len(),
+                    script.nodes.len(),
                     script.created_at.format(TIMESTAMP_FORMAT),
                     script.updated_at.format(TIMESTAMP_FORMAT),
                 ]);
