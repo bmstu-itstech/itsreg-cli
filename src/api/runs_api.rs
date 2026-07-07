@@ -103,7 +103,7 @@ pub async fn stop_run(api: &Api, id: &str) -> Result<(), CliError> {
     let content = resp.text().await?;
 
     if status.is_success() {
-        serde_json::from_str(content.as_str()).map_err(CliError::from)
+        Ok(())
     } else {
         match status {
             StatusCode::UNAUTHORIZED => Err(CliError::Unauthorized),

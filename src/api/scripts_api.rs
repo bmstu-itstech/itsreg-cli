@@ -1,6 +1,6 @@
 use reqwest::StatusCode;
 
-use crate::Api;
+use crate::api::Api;
 use crate::error::CliError;
 use crate::models::{CreateScriptRequest, CreateScriptResponse, Script, ValidationError};
 

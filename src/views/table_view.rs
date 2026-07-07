@@ -150,7 +150,7 @@ impl TableViewer {
         table
             .print_tty(false)
             .map(|_| ())
-            .unwrap_or_else(|e| eprintln!("Failed to print to t: {:?}", e));
+            .unwrap_or_else(|e| eprintln!("Failed to print to the table: {:?}", e));
     }
 
     fn format_date_or_na(t: &Option<DateTime<FixedOffset>>) -> String {
