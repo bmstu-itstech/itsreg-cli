@@ -29,14 +29,14 @@ impl Controller {
 
     pub async fn create_bot(
         &self,
-        script_id: &str,
-        token: &str,
-        desc: &str,
+        script_id: String,
+        token: String,
+        desc: String,
     ) -> Result<(), CliError> {
         let req = CreateBotRequest {
-            script_id: script_id.to_owned(),
-            token: token.to_owned(),
-            desc: desc.to_owned(),
+            script_id,
+            token,
+            desc,
         };
         api::bots_api::create_bot(&self.api, req)
             .await
@@ -60,10 +60,10 @@ impl Controller {
             .map(|bot| self.viewer.view_bot(&bot))
     }
 
-    pub async fn delete_bot(&self, bot_id: &str) -> Result<(), CliError> {
-        api::bots_api::delete_bot(&self.api, bot_id)
+    pub async fn delete_bot(&self, bot_id: String) -> Result<(), CliError> {
+        api::bots_api::delete_bot(&self.api, &bot_id)
             .await
-            .map(|_| self.viewer.view_bot_id(bot_id))
+            .map(|_| self.viewer.view_bot_id(&bot_id))
     }
 
     pub async fn create_script(&self, src: &dyn Source) -> Result<(), CliError> {
@@ -79,50 +79,50 @@ impl Controller {
             .map(|scripts| self.viewer.view_scripts(&scripts))
     }
 
-    pub async fn show_script(&self, id: &str) -> Result<(), CliError> {
-        api::scripts_api::get_script(&self.api, id)
+    pub async fn show_script(&self, id: String) -> Result<(), CliError> {
+        api::scripts_api::get_script(&self.api, &id)
             .await
             .map(|script| self.viewer.view_script(&script))
     }
 
-    pub async fn update_script(&self, id: &str, src: &dyn Source) -> Result<(), CliError> {
+    pub async fn update_script(&self, id: String, src: &dyn Source) -> Result<(), CliError> {
         let script = src.input_script().map_err(CliError::IO)?;
-        api::scripts_api::update_script(&self.api, id, script)
+        api::scripts_api::update_script(&self.api, &id, script)
             .await
             .map(|script| self.viewer.view_script(&script))
     }
 
-    pub async fn delete_script(&self, id: &str) -> Result<(), CliError> {
-        api::scripts_api::delete_script(&self.api, id)
+    pub async fn delete_script(&self, id: String) -> Result<(), CliError> {
+        api::scripts_api::delete_script(&self.api, &id)
             .await
-            .map(|_| self.viewer.view_script_id(id))
+            .map(|_| self.viewer.view_script_id(&id))
     }
 
-    pub async fn start_bot(&self, bot_id: &str) -> Result<(), CliError> {
-        api::runs_api::create_run(&self.api, bot_id)
+    pub async fn start_bot(&self, bot_id: String) -> Result<(), CliError> {
+        api::runs_api::create_run(&self.api, &bot_id)
             .await
             .map(|res| self.viewer.view_run_id(&res.run_id))
     }
 
     pub async fn view_runs(
         &self,
-        bot_id: Option<&str>,
+        bot_id: Option<String>,
         status: Option<RunStatus>,
     ) -> Result<(), CliError> {
-        api::runs_api::get_runs(&self.api, bot_id, status)
+        api::runs_api::get_runs(&self.api, bot_id.as_deref(), status)
             .await
             .map(|runs| self.viewer.view_runs(&runs))
     }
 
-    pub async fn show_run(&self, id: &str) -> Result<(), CliError> {
-        api::runs_api::get_run(&self.api, id)
+    pub async fn show_run(&self, id: String) -> Result<(), CliError> {
+        api::runs_api::get_run(&self.api, &id)
             .await
             .map(|run| self.viewer.view_run(&run))
     }
 
-    pub async fn stop_run(&self, id: &str) -> Result<(), CliError> {
-        api::runs_api::stop_run(&self.api, id)
+    pub async fn stop_run(&self, id: String) -> Result<(), CliError> {
+        api::runs_api::stop_run(&self.api, &id)
             .await
-            .map(|_| self.viewer.view_run_id(id))
+            .map(|_| self.viewer.view_run_id(&id))
     }
 }

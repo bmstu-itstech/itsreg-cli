@@ -238,15 +238,15 @@ async fn main() -> ExitCode {
                 script_id,
                 bot_token,
                 desc,
-            } => ctrl.create_bot(&script_id, &bot_token, &desc).await,
+            } => ctrl.create_bot(script_id, bot_token, desc).await,
             BotsCommands::Update {
                 id,
                 script_id,
                 bot_token,
                 desc,
             } => ctrl.update_bot(id, script_id, bot_token, desc).await,
-            BotsCommands::Remove { id } => ctrl.delete_bot(&id).await,
-            BotsCommands::Start { id } => ctrl.start_bot(&id).await,
+            BotsCommands::Remove { id } => ctrl.delete_bot(id).await,
+            BotsCommands::Start { id } => ctrl.start_bot(id).await,
         },
         Commands::Scripts { action } => match action {
             ScriptsCommands::Create { input } => {
@@ -254,20 +254,19 @@ async fn main() -> ExitCode {
                 ctrl.create_script(&src).await
             }
             ScriptsCommands::List => ctrl.list_scripts().await,
-            ScriptsCommands::Get { id } => ctrl.show_script(&id).await,
+            ScriptsCommands::Get { id } => ctrl.show_script(id).await,
             ScriptsCommands::Update { id, input } => {
                 let src = FileSource::new(&input);
-                ctrl.update_script(&id, &src).await
+                ctrl.update_script(id, &src).await
             }
-            ScriptsCommands::Remove { id } => ctrl.delete_script(&id).await,
+            ScriptsCommands::Remove { id } => ctrl.delete_script(id).await,
         },
         Commands::Runs { action } => match action {
             RunsCommands::List { bot_id, status } => {
-                ctrl.view_runs(bot_id.as_deref(), status.map(Into::into))
-                    .await
+                ctrl.view_runs(bot_id, status.map(Into::into)).await
             }
-            RunsCommands::Get { id } => ctrl.show_run(&id).await,
-            RunsCommands::Stop { id } => ctrl.stop_run(&id).await,
+            RunsCommands::Get { id } => ctrl.show_run(id).await,
+            RunsCommands::Stop { id } => ctrl.stop_run(id).await,
         },
     };
 
