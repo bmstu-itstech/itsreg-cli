@@ -151,7 +151,7 @@ enum BotsCommands {
         id: String,
     },
 
-    #[clap(about = "Create a run for a specifiec bot and start it")]
+    #[clap(about = "Create a run for a specific bot and start it")]
     Start {
         #[clap(help = "ID of the bot to start")]
         id: String,
@@ -177,7 +177,7 @@ enum ScriptsCommands {
     },
 
     Update {
-        #[clap(help = "Update an existent script")]
+        #[clap(help = "Update an existing script")]
         id: String,
 
         #[clap(long, short = 'i', help = "Path to the script file")]

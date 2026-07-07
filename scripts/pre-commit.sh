@@ -35,11 +35,11 @@ echo -e "${PREV_LINE}Running cargo fmt check... ${GREEN}OK${NC}"
 
 # Rust linter
 echo "Running clippy..."
-cargo clippy -q -- -D warnings || error "clippy found issues, fix them before commiting"
+cargo clippy -q -- -D warnings || error "clippy found issues, fix them before committing"
 echo -e "${PREV_LINE}Running clippy... ${GREEN}OK${NC}"
 
 # Unit tests
 echo "Running tests..."
-cargo test -q || error "tests failed, fix them before commiting"
+cargo test -q || error "tests failed, fix them before committing"
 
 echo -e "${GREEN}All checks passed${NC}"
