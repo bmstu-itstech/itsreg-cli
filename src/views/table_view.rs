@@ -114,8 +114,8 @@ impl Viewer for TableViewer {
                 run.id,
                 run.bot_id,
                 run.status,
-                Self::format_date_or_na(run.started_at),
-                Self::format_date_or_na(run.stopped_at),
+                Self::format_date_or_na(&run.started_at),
+                Self::format_date_or_na(&run.stopped_at),
                 run.error_msg.clone().unwrap_or_default()
             ]);
         });
@@ -129,8 +129,8 @@ impl Viewer for TableViewer {
                     run.id,
                     run.bot_id,
                     run.status,
-                    Self::format_date_or_na(run.started_at),
-                    Self::format_date_or_na(run.stopped_at),
+                    Self::format_date_or_na(&run.started_at),
+                    Self::format_date_or_na(&run.stopped_at),
                     run.error_msg.clone().unwrap_or_default()
                 ]);
             }
@@ -153,7 +153,7 @@ impl TableViewer {
             .unwrap_or_else(|e| eprintln!("Failed to print to t: {:?}", e));
     }
 
-    fn format_date_or_na(t: Option<DateTime<FixedOffset>>) -> String {
+    fn format_date_or_na(t: &Option<DateTime<FixedOffset>>) -> String {
         t.map(|t| t.format(TIMESTAMP_FORMAT).to_string())
             .unwrap_or("N/A".into())
     }
