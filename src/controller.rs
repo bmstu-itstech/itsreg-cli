@@ -1,6 +1,7 @@
 use crate::api;
 use crate::api::Api;
 use crate::error::CliError;
+use crate::graph::{self, GraphIndex, GraphStyle};
 use crate::models::{CreateBotRequest, RunStatus, UpdateBotRequest};
 use crate::sources::Source;
 use crate::views::Viewer;
@@ -96,6 +97,26 @@ impl Controller {
         api::scripts_api::delete_script(&self.api, &id)
             .await
             .map(|_| self.viewer.view_script_id(&id))
+    }
+
+    /// Render a script's state graph from a local file (no network needed).
+    ///
+    /// Launches the interactive TUI unless `plain` is set, in which case the
+    /// chosen style is printed to stdout — handy for piping and CI.
+    pub fn show_graph(
+        &self,
+        src: &dyn Source,
+        style: GraphStyle,
+        plain: bool,
+    ) -> Result<(), CliError> {
+        let script = src.input_script().map_err(CliError::IO)?;
+        let idx = GraphIndex::new(&script);
+        if plain {
+            println!("{}", graph::render::render(&idx, style));
+            Ok(())
+        } else {
+            graph::tui::run(&idx, style).map_err(CliError::IO)
+        }
     }
 
     pub async fn start_bot(&self, bot_id: String) -> Result<(), CliError> {
