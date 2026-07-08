@@ -1,130 +1,1798 @@
 {
-    "desc": "registration demo",
-    "entries": [
-        {
-            "key": "start",
-            "start": 0
-        }
-    ],
+    "id": "z1sVC4",
+    "desc": "Регистрация на ITS Fest 2026",
     "nodes": [
         {
-            "state": 0,
-            "title": "greeting",
-            "messages": [
-                {
-                    "text": "Hi! Choose:"
-                }
-            ],
-            "options": [
-                "register",
-                "help",
-                "again"
-            ],
+            "state": 28,
+            "title": "Продолжение регистрации?",
             "edges": [
                 {
                     "predicate": {
                         "type": "exact",
-                        "text": "register"
+                        "text": "Да, продолжить"
                     },
-                    "to": 1,
+                    "to": 20,
                     "operation": "save"
                 },
                 {
                     "predicate": {
                         "type": "exact",
-                        "text": "help"
+                        "text": "Нет, не хочу регистрироваться"
+                    },
+                    "to": 29,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 128,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "<tg-emoji emoji-id=\"5370696440022605818\">💻</tg-emoji> Продолжим регистрацию на ITS FEST?"
+                }
+            ],
+            "options": [
+                "Да, продолжить",
+                "Нет, не хочу регистрироваться"
+            ]
+        },
+        {
+            "state": 10,
+            "title": "ВК",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 5,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 11,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🔗 <b>Дополнительный контакт для связи</b>\n<i>Укажите ссылку на ваш профиль (например, ВКонтакте) для оперативной связи, если это потребуется</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 1020,
+            "title": "Конец: участники",
+            "messages": [
+                {
+                    "text": "🤩 <b>Регистрация завершена!</b>\n\nВаша заявка на участие в ITS FEST успешно получена. Мы очень рады, что Вы выбрали этот путь и готовы развиваться вместе с нами!\n\n👾 <i>Совсем скоро с Вами свяжутся организаторы мероприятия с подробной информацией о дальнейших шагах!</i>"
+                }
+            ]
+        },
+        {
+            "state": 122,
+            "title": "Err: Учебная группа",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^((((ФМОП-)?(ИУ|ИБМ|МТ|СМ|БМТ|РЛ|Э|РК|ФН|Л|СГН|ВУЦ|УЦ|ИСОТ|РКТ|АК|ПС|РТ|ЛТ|К|ЮР|ОЭ|ТА|ТБД|ТИ|ТД|ТИП|ТКС|ТМО|ТМР|ТР|ТСА|ТСР|ТСС|ТУ|ТУС|ТЭ)(К)?[1-9]\\d?)|(ЮР(\\.ДК)?))(К)?[ИЦ]?-(((1[0-2])|(\\d))((\\d)|(.\\d\\d+))([АМБ]?(В)?)))$"
+                    },
+                    "to": 27,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 21,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 122,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Введите корректный код учебной группы</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 29,
+            "title": "Конец: отказ",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 30,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "😔 <b>Жаль, что Вы не хотите регистрироваться на ITS FEST"
+                },
+                {
+                    "text": "<tg-emoji emoji-id=\"5372855975348834200\">💻</tg-emoji> Расскажите, пожалуйста, почему Вы решили не продолжать регистрацию\n\n<i>Выберите один из предложенных вариантов ответа или напишите свой вариант</i>"
+                }
+            ],
+            "options": [
+                "Передумал(а)",
+                "Проект ещё не готов к показу",
+                "Сложная анкета",
+                "Не подходит время или формат"
+            ]
+        },
+        {
+            "state": 18,
+            "title": "Презентация",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
+                    },
+                    "to": 19,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Пропустить"
+                    },
+                    "to": 19,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 17,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 118,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "<b>Презентация проекта</b>\n\nПришлите <b>ссылку</b> на облако (например, Яндекс Диск) с PDF-презентацией проекта\n\n<i>Обратите внимание, что файл должен быть доступен для просмотра</i>"
+                }
+            ],
+            "options": [
+                "Пропустить",
+                "Назад"
+            ]
+        },
+        {
+            "state": 121,
+            "title": "Err: Бауманка?",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Да"
+                    },
+                    "to": 22,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Нет"
+                    },
+                    "to": 23,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 20,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 121,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "⚠️ <b>Выберите один из предложенных вариантов ответа</b>"
+                },
+                {
+                    "text": "📍 <b>Вы учитесь в Московском кампусе МГТУ им. Н.Э. Баумана?</b>"
+                }
+            ],
+            "options": [
+                "Да",
+                "Нет",
+                "Назад"
+            ]
+        },
+        {
+            "state": 31,
+            "title": "Регистрация для участников завершена",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 20,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "💻 <b>Регистрация участников на ITS FEST завершена</b>\n\n<tg-emoji emoji-id=\"5463162275542093015\">🐘</tg-emoji> Будем рады видеть Вас на следующих мероприятиях Студа_ИУ!"
+                }
+            ],
+            "options": [
+                "Зарегистрироваться как зритель"
+            ]
+        },
+        {
+            "state": 120,
+            "title": "Err: Студент?",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Да"
+                    },
+                    "to": 21,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Нет"
+                    },
+                    "to": 24,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
                     },
                     "to": 4,
                     "operation": "noop"
                 },
                 {
                     "predicate": {
-                        "type": "exact",
-                        "text": "again"
+                        "type": "always"
                     },
-                    "to": 0,
+                    "to": 120,
                     "operation": "noop"
                 }
+            ],
+            "messages": [
+                {
+                    "text": "⚠️ <b>Выберите один из предложенных вариантов ответа</b>"
+                },
+                {
+                    "text": "🎓 <b>Вы являетесь студентом вуза?</b>"
+                }
+            ],
+            "options": [
+                "Да",
+                "Нет",
+                "Назад"
             ]
         },
         {
-            "state": 1,
-            "title": "ask_name",
-            "messages": [
-                {
-                    "text": "Name?"
-                }
-            ],
+            "state": 12,
+            "title": "Трек",
             "edges": [
                 {
                     "predicate": {
                         "type": "regex",
-                        "pattern": "^[A-Za-z ]+$"
+                        "pattern": "(Ecommerce и Fintech|Машинное обучение и ИИ|Цифровое образование|Игровая индустрия и VR/AR|Автоматизация и робототехника)"
                     },
-                    "to": 2,
+                    "to": 13,
                     "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 11,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 112,
+                    "operation": "noop"
                 }
+            ],
+            "messages": [
+                {
+                    "text": "🎯 <b>Трек участия</b>\n\nПроекты на ITS FEST распределяются по 5 направлениям — выберите то, которое лучше всего подходит вашей идее:\n\n<b>Ecommerce и Fintech</b>\nСервисы для онлайн-торговли, финтех-решения, платежные системы и всё, что меняет цифровую экономику\n\n<b>Машинное обучение и ИИ</b>\nПроекты с использованием ML и AI: от анализа данных до умных алгоритмов и автоматизации решений\n\n<b>Цифровое образование</b>\nОбразовательные платформы, приложения и инструменты, которые делают обучение доступнее и эффективнее\n\n<b>Игровая индустрия и VR/AR</b>\nИгры, интерактивные проекты, а также решения с виртуальной и дополненной реальностью\n\n<b>Автоматизация и робототехника</b>\nИнженерные решения, роботы, системы автоматизации и всё, что связано с «железом» и управлением процессами"
+                }
+            ],
+            "options": [
+                "Ecommerce и Fintech",
+                "Машинное обучение и ИИ",
+                "Цифровое образование",
+                "Игровая индустрия и VR/AR",
+                "Автоматизация и робототехника",
+                "Назад"
+            ]
+        },
+        {
+            "state": 22,
+            "title": "Учебная группа",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^((((ФМОП-)?(ИУ|ИБМ|МТ|СМ|БМТ|РЛ|Э|РК|ФН|Л|СГН|ВУЦ|УЦ|ИСОТ|РКТ|АК|ПС|РТ|ЛТ|К|ЮР|ОЭ|ТА|ТБД|ТИ|ТД|ТИП|ТКС|ТМО|ТМР|ТР|ТСА|ТСР|ТСС|ТУ|ТУС|ТЭ)(К)?[1-9]\\d?)|(ЮР(\\.ДК)?))(К)?[ИЦ]?-(((1[0-2])|(\\d))((\\d)|(.\\d\\d+))([АМБ]?(В)?)))$"
+                    },
+                    "to": 27,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 21,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 122,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📖 <b>Введите код учебной группы</b>\n\n<i>Например: ИУ11-21Б</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 105,
+            "title": "Err: МГТУ?",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "МГТУ им. Н.Э. Баумана"
+                    },
+                    "to": 9,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Другой вуз"
+                    },
+                    "to": 6,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 4,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 105,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "⚠️ <b>Используйте кнопки для ответа на сообщение</b>"
+                },
+                {
+                    "text": "🏫 <b>Обучаетесь ли Вы в МГТУ им. Н.Э. Баумана?</b>"
+                }
+            ],
+            "options": [
+                "МГТУ им. Н.Э. Баумана",
+                "Другой вуз",
+                "Назад"
+            ]
+        },
+        {
+            "state": 125,
+            "title": "Err: почта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^[a-zA-Z0-9\\._%+-]+@[a-zA-Z0-9\\.-]+\\.[a-zA-Z]{2,}$"
+                    },
+                    "to": 25,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 24,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 125,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Введите корректный адрес электронной почты</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 8,
+            "title": "Курс обучения",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "[1-6]"
+                    },
+                    "to": 10,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 7,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 108,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🔢 <b>Введите курс обучения</b>"
+                }
+            ],
+            "options": [
+                "Назад"
             ]
         },
         {
             "state": 2,
-            "title": "ask_age",
-            "messages": [
-                {
-                    "text": "Age?"
-                }
-            ],
+            "title": "Источник",
             "edges": [
                 {
                     "predicate": {
-                        "type": "regex",
-                        "pattern": "^[0-9]+$"
+                        "type": "always"
                     },
                     "to": 3,
                     "operation": "save"
                 }
+            ],
+            "messages": [
+                {
+                    "text": "📣 <b>Источник информации</b>\n\nОткуда вы узнали про ITS FEST?\n\n<i>Можно выбрать вариант или написать свой</i>"
+                }
+            ],
+            "options": [
+                "Пост в канале Студ_ИУ",
+                "Соцсети МГТУ им. Н.Э. Баумана",
+                "Тематические паблики/соцсети",
+                "Администрация вуза"
             ]
         },
         {
-            "state": 3,
-            "title": "done",
-            "messages": [
-                {
-                    "text": "Done!"
-                }
-            ],
+            "state": 111,
+            "title": "Err: Название проекта",
             "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 10,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": ".{2,50}"
+                    },
+                    "to": 12,
+                    "operation": "save"
+                },
                 {
                     "predicate": {
                         "type": "always"
                     },
-                    "to": 0,
+                    "to": 111,
                     "operation": "noop"
                 }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Введённое название проекта слишком короткое или слишком длинное!</b>"
+                },
+                {
+                    "text": "💡 <b>Введите название вашего проекта</b>\n<i>2-50 символов</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 128,
+            "title": "Err: продолжение регистрации",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Да, продолжить"
+                    },
+                    "to": 3,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Нет, не хочу регистрироваться"
+                    },
+                    "to": 29,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 128,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "⚠️ <b>Выберите один из предложенных вариантов ответа</b>"
+                },
+                {
+                    "text": "<tg-emoji emoji-id=\"5370696440022605818\">💻</tg-emoji> Продолжим регистрацию на ITS FEST?"
+                }
+            ],
+            "options": [
+                "Да, продолжить",
+                "Нет, не хочу регистрироваться"
+            ]
+        },
+        {
+            "state": 24,
+            "title": "Номер телефона",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^\\+7\\d{10}$"
+                    },
+                    "to": 25,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 20,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 124,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📞 <b>Введите ваш номер телефона</b>\n<i>Формат: +7XXXXXXXXXX</i>"
+                }
+            ],
+            "options": [
+                "Назад"
             ]
         },
         {
             "state": 4,
-            "title": "help",
-            "messages": [
+            "title": "Статус",
+            "edges": [
                 {
-                    "text": "Help"
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Участник"
+                    },
+                    "to": 31,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Зритель"
+                    },
+                    "to": 20,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 3,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 104,
+                    "operation": "noop"
                 }
             ],
+            "messages": [
+                {
+                    "text": "<b>Выберите ваш статус на ITS FEST</b>\n\n🚀 <b>Участник</b>\n<i>У меня есть собственный проект, и я хочу представить его на фестивале.</i>\n\n👀 <b>Зритель</b>\n<i>Я хочу прийти, чтобы вдохновиться идеями и увидеть работы участников.</i>"
+                }
+            ],
+            "options": [
+                "Участник",
+                "Зритель",
+                "Назад"
+            ]
+        },
+        {
+            "state": 3,
+            "title": "ФИО",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 2,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 4,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "👤 <b>ФИО</b>\n<i>Пример: Иванов Иван Иванович</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 21,
+            "title": "Бауманка?",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Да"
+                    },
+                    "to": 22,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Нет"
+                    },
+                    "to": 23,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 20,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 121,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📍 <b>Вы учитесь в Московском кампусе МГТУ им. Н.Э. Баумана?</b>"
+                }
+            ],
+            "options": [
+                "Да",
+                "Нет",
+                "Назад"
+            ]
+        },
+        {
+            "state": 1001,
+            "title": "Открывающее сообщение",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Начать регистрацию"
+                    },
+                    "to": 1,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "<b>Добро пожаловать! На связи бот регистрации на мероприятие ITS FEST 💻</b>\n\nITS FEST — ежегодный фестиваль студенческих стартапов, объединяющий молодых предпринимателей и представителей ведущих IT-компаний.\n\n👇 <i>Для того, чтобы принять участие, жмите «Начать регистрацию» и последовательно укажите необходимые данные!</i>"
+                }
+            ],
+            "options": [
+                "Начать регистрацию"
+            ]
+        },
+        {
+            "state": 113,
+            "title": "Err: Описание проекта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "[\\s\\S]{300,1000}"
+                    },
+                    "to": 14,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 12,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 113,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Описание проекта должно включать от 300 до 1000 символов</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 104,
+            "title": "Err: статус",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Участник"
+                    },
+                    "to": 31,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Зритель"
+                    },
+                    "to": 20,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 104,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "⚠️ <b>Используйте кнопки для ответа на сообщение</b>"
+                },
+                {
+                    "text": "<b>Выбор статуса</b>\n\nЧтобы продолжить, пожалуйста, выберите ваш статус на ITS FEST:\n\n🚀 <b>Участник</b>\n<i>У меня есть собственный проект, и я хочу представить его на фестивале.</i>\n\n👀 <b>Зритель</b>\n<i>Я хочу прийти, чтобы вдохновиться идеями и увидеть работы участников.</i>"
+                }
+            ],
+            "options": [
+                "Участник",
+                "Зритель"
+            ]
+        },
+        {
+            "state": 14,
+            "title": "Проблематика проекта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 13,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 15,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❓ <b>Какую проблему(ы) решает Ваш проект?</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 101,
+            "title": "Err: 152 ФЗ",
             "edges": [
                 {
                     "predicate": {
                         "type": "always"
                     },
-                    "to": 0,
+                    "to": 1,
                     "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Требуется подтверждение</b>\n\nМы не можем продолжить регистрацию без согласия на обработку персональных данных"
+                }
+            ],
+            "options": [
+                "Далее"
+            ]
+        },
+        {
+            "state": 17,
+            "title": "Доп. материалы",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 16,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Пропустить"
+                    },
+                    "to": 18,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 18,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📎 <b>Дополнительные материалы</b>\n\nДобавьте ссылки на статьи, GitHub и др."
+                }
+            ],
+            "options": [
+                "Пропустить",
+                "Назад"
+            ]
+        },
+        {
+            "state": 112,
+            "title": "Err: Трек",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "(Ecommerce и Fintech|Машинное обучение и ИИ|Цифровое образование|Игровая индустрия и VR/AR|Автоматизация и робототехника)"
+                    },
+                    "to": 13,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 11,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 112,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "⚠️ <b>Используйте кнопки для выбора трека</b>"
+                },
+                {
+                    "text": "<b>Трек участия</b>\n\nПроекты на ITS FEST распределяются по 5 направлениям — выберите то, которое лучше всего подходит вашей идее:\n\n<b>Ecommerce и Fintech</b>\nСервисы для онлайн-торговли, финтех-решения, платежные системы и всё, что меняет цифровую экономику\n\n<b>Машинное обучение и ИИ</b>\nПроекты с использованием ML и AI: от анализа данных до умных алгоритмов и автоматизации решений\n\n<b>Цифровое образование</b>\nОбразовательные платформы, приложения и инструменты, которые делают обучение доступнее и эффективнее\n\n<b>Игровая индустрия и VR/AR</b>\nИгры, интерактивные проекты, а также решения с виртуальной и дополненной реальностью\n\n<b>Автоматизация и робототехника</b>\nИнженерные решения, роботы, системы автоматизации и всё, что связано с «железом» и управлением процессами"
+                }
+            ],
+            "options": [
+                "Ecommerce и Fintech",
+                "Машинное обучение и ИИ",
+                "Цифровое образование",
+                "Игровая индустрия и VR/AR",
+                "Автоматизация и робототехника",
+                "Назад"
+            ]
+        },
+        {
+            "state": 13,
+            "title": "Описание проекта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "[\\s\\S]{300,1000}"
+                    },
+                    "to": 14,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 11,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 113,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "💡 <b>Дальше Вам предстоит ответить на несколько вопросов о вашем проекте</b>\n\nПостарайтесь заполнить их максимально подробно — чем больше информации Вы предоставите, тем проще экспертам будет понять вашу идею и оценить её потенциал"
+                },
+                {
+                    "text": "📝 <b>Кратко опишите ваш проект</b>\n<i>Описание должно содержать от 300 до 1000 символов</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 23,
+            "title": "Название вуза",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 21,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 24,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🏛️ <b>Введите название вашего вуза</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 124,
+            "title": "Номер телефона",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^\\+7\\d{10}$"
+                    },
+                    "to": 25,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 20,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 124,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Введите корректный номер телефона в формате +7XXXXXXXXXX</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 118,
+            "title": "Err: Презентация",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
+                    },
+                    "to": 19,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Пропустить"
+                    },
+                    "to": 19,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 17,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 118,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "Некорректная ссылка"
+                },
+                {
+                    "text": "<b>Презентация проекта</b>\n\nПришлите <b>ссылку</b> на облако (например, Яндекс Диск) с PDF-презентацией проекта\n\n<i>Обратите внимание, что файл должен быть доступен для просмотра<i>"
+                }
+            ],
+            "options": [
+                "Пропустить",
+                "Назад"
+            ]
+        },
+        {
+            "state": 126,
+            "title": "Err: паспорт",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^\\d{4}\\ \\d{6}$"
+                    },
+                    "to": 27,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 25,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 126,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Введите корректные данные паспорта РФ (серия и номер) в формате XXXX XXXXXX</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 20,
+            "title": "Студент?",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Да"
+                    },
+                    "to": 21,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Нет"
+                    },
+                    "to": 24,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 4,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 120,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🎓 <b>Вы являетесь студентом вуза?</b>"
+                }
+            ],
+            "options": [
+                "Да",
+                "Нет",
+                "Назад"
+            ]
+        },
+        {
+            "state": 25,
+            "title": "Почта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^[a-zA-Z0-9\\._%+-]+@[a-zA-Z0-9\\.-]+\\.[a-zA-Z]{2,}$"
+                    },
+                    "to": 26,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 24,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 125,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📧 <b>Введите Вашу электронную почту</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 16,
+            "title": "Изображение проекта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
+                    },
+                    "to": 17,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Пропустить"
+                    },
+                    "to": 17,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 15,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 116,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "<b>Материалы проекта</b>\n\nПришлите <b>ссылку</b> на облако с изображениями проекта (например, Яндекс Диск)\n\n<i>Обратите внимание, что должен быть открыт доступ на просмотр</i>"
+                }
+            ],
+            "options": [
+                "Пропустить",
+                "Назад"
+            ]
+        },
+        {
+            "state": 1,
+            "title": "152 ФЗ",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Подтверждаю"
+                    },
+                    "to": 2,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 101,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📋 <b>Согласие на обработку данных</b>\n\nПродолжая регистрацию, Вы подтверждаете согласие с <a href=\"https://clck.ru/3Sv2fT\">положением об обработке персональных данных</a> согласно 152-ФЗ"
+                }
+            ],
+            "options": [
+                "Подтверждаю"
+            ]
+        },
+        {
+            "state": 116,
+            "title": "Err: Изображение проекта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$"
+                    },
+                    "to": 17,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Пропустить"
+                    },
+                    "to": 17,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 15,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 116,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Отправьте корректную ссылку</b>"
+                }
+            ],
+            "options": [
+                "Пропустить",
+                "Назад"
+            ]
+        },
+        {
+            "state": 26,
+            "title": "Паспорт",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^\\d{4}\\ \\d{6}$"
+                    },
+                    "to": 27,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 25,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 126,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🪪 <b>Введите серию и номер паспорта РФ</b>\n<i>Формат: XXXX XXXXXX</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 6,
+            "title": "Другой вуз",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 5,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 7,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🏛️ <b>Введите название вашего вуза</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 30,
+            "title": "Конец: отказ - доп. вопрос",
+            "messages": [
+                {
+                    "text": "<tg-emoji emoji-id=\"5370696440022605818\">💻</tg-emoji> Спасибо за обратную связь!\n\n<tg-emoji emoji-id=\"5463162275542093015\">🐘</tg-emoji> Будем рады видеть Вас на следующих мероприятиях Студа_ИУ!"
                 }
             ]
         },
         {
+            "state": 109,
+            "title": "Err: Учебная группа",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^((((ФМОП-)?(ИУ|ИБМ|МТ|СМ|БМТ|РЛ|Э|РК|ФН|Л|СГН|ВУЦ|УЦ|ИСОТ|РКТ|АК|ПС|РТ|ЛТ|К|ЮР|ОЭ|ТА|ТБД|ТИ|ТД|ТИП|ТКС|ТМО|ТМР|ТР|ТСА|ТСР|ТСС|ТУ|ТУС|ТЭ)(К)?[1-9]\\d?)|(ЮР(\\.ДК)?))(К)?[ИЦ]?-(((1[0-2])|(\\d))((\\d)|(.\\d\\d+))([АМБ]?(В)?)))$"
+                    },
+                    "to": 10,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 5,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 109,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Введите корректный код учебной группы</b>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 9,
+            "title": "Учебная группа",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^((((ФМОП-)?(ИУ|ИБМ|МТ|СМ|БМТ|РЛ|Э|РК|ФН|Л|СГН|ВУЦ|УЦ|ИСОТ|РКТ|АК|ПС|РТ|ЛТ|К|ЮР|ОЭ|ТА|ТБД|ТИ|ТД|ТИП|ТКС|ТМО|ТМР|ТР|ТСА|ТСР|ТСС|ТУ|ТУС|ТЭ)(К)?[1-9]\\d?)|(ЮР(\\.ДК)?))(К)?[ИЦ]?-(((1[0-2])|(\\d))((\\d)|(.\\d\\d+))([АМБ]?(В)?)))$"
+                    },
+                    "to": 10,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 5,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 109,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📖 <b>Введите код учебной группы</b>\n\n<i>Например: ИУ11-21Б</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 11,
+            "title": "Название проекта",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": ".{2,50}"
+                    },
+                    "to": 12,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 10,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 111,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "💡 <b>Введите название вашего проекта</b>\n<i>2-50 символов</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 108,
+            "title": "Err: курс обучения",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^[1-6]$"
+                    },
+                    "to": 10,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 7,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 108,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "❌ <b>Введите корректное число</b>\n<i>Номер курса обучения (1-6)</i>"
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
+            "state": 15,
+            "title": "Опыт команды",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 14,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 16,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🏆 <b>Опишите, какой у вашей команды опыт</b>\n\nПример:\n<i>- 3 место на Кейс-чемпионате KTS x МГТУ</i>\n- <i>Финалисты студенческого акселератора Сбера</i>\n- ..."
+                }
+            ],
+            "options": [
+                "Назад"
+            ]
+        },
+        {
             "state": 5,
-            "title": "orphan",
-            "messages": []
+            "title": "МГТУ?",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "МГТУ им. Н.Э. Баумана"
+                    },
+                    "to": 9,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Другой вуз"
+                    },
+                    "to": 6,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 4,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 105,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "🏫 <b>Обучаетесь ли Вы в МГТУ им. Н.Э. Баумана?</b>"
+                }
+            ],
+            "options": [
+                "МГТУ им. Н.Э. Баумана",
+                "Другой вуз",
+                "Назад"
+            ]
+        },
+        {
+            "state": 19,
+            "title": "Корректность",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Подтверждаю корректность"
+                    },
+                    "to": 1020,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 18,
+                    "operation": "noop"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "✅ <b>Пожалуйста, проверьте введённую выше информацию</b>"
+                }
+            ],
+            "options": [
+                "Подтверждаю корректность",
+                "Нет, вернуться назад"
+            ]
+        },
+        {
+            "state": 7,
+            "title": "Ступень образования",
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "Назад"
+                    },
+                    "to": 6,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 8,
+                    "operation": "save"
+                }
+            ],
+            "messages": [
+                {
+                    "text": "📚 <b>Выберите ступень образования</b>"
+                }
+            ],
+            "options": [
+                "Бакалавриат",
+                "Специалитет",
+                "Магистратура",
+                "Аспирантура",
+                "Назад"
+            ]
+        },
+        {
+            "state": 27,
+            "title": "Конец: зрители",
+            "messages": [
+                {
+                    "text": "💻 <b>Регистрация завершена!</b>\n\nМероприятие пройдёт:\n- 25 мая\n- Конгресс-Холл по адресу: <a href=\"https://yandex.com/maps/-/CPfWR-nA\">г. Москва, Бригадирский переулок, 13, B4K</a>\n- с 12:00 до 17:30"
+                }
+            ]
         }
-    ]
+    ],
+    "entries": [
+        {
+            "key": "m_registration",
+            "start": 28
+        },
+        {
+            "key": "t_participant",
+            "start": 5
+        },
+        {
+            "key": "start",
+            "start": 1001
+        }
+    ],
+    "createdAt": "2026-06-23T22:43:13.578979+03:00",
+    "updatedAt": "2026-06-23T22:43:13.578979+03:00"
 }

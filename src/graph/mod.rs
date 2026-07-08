@@ -59,6 +59,8 @@ pub struct GraphIndex<'a> {
     by_state: BTreeMap<i32, &'a Node>,
     /// Entry states sorted by their entry `key` for stable ordering.
     entries: Vec<i32>,
+    /// Entries as `(key, start)` sorted by key — for entry-point pickers.
+    entry_list: Vec<(String, i32)>,
     /// Vertical layout order: entry roots first, then BFS-reachable, then
     /// unreachable nodes. This is the "spine" down which nodes are stacked.
     order: Vec<i32>,
@@ -72,20 +74,27 @@ impl<'a> GraphIndex<'a> {
     pub fn new<G: StateGraph + 'a>(graph: &'a G) -> Self {
         let by_state: BTreeMap<i32, &Node> = graph.nodes().iter().map(|n| (n.state, n)).collect();
 
-        // Entry roots, sorted by key for deterministic output.
-        let mut entries: Vec<i32> = graph
+        // Entries as (key, start), keeping only those whose start resolves to a
+        // known node, sorted by key for deterministic output.
+        let mut entry_list: Vec<(String, i32)> = graph
             .entries()
             .iter()
-            .map(|e| e.start)
-            .filter(|s| by_state.contains_key(s))
+            .map(|e| (e.key.clone(), e.start))
+            .filter(|(_, s)| by_state.contains_key(s))
             .collect();
-        entries.sort();
-        entries.dedup();
+        entry_list.sort_by(|a, b| a.0.cmp(&b.0));
+        entry_list.dedup_by(|a, b| a.0 == b.0);
+
+        // Entry root states (deduplicated) sorted by key.
+        let entries: Vec<i32> = entry_list.iter().map(|(_, s)| *s).collect();
+        let mut entries_sorted = entries.clone();
+        entries_sorted.sort();
+        entries_sorted.dedup();
 
         // BFS from the entry roots to get a stable reachable order.
-        let mut seen: BTreeSet<i32> = entries.iter().copied().collect();
-        let mut order: Vec<i32> = entries.clone();
-        let mut queue: VecDeque<i32> = entries.iter().copied().collect();
+        let mut seen: BTreeSet<i32> = entries_sorted.iter().copied().collect();
+        let mut order: Vec<i32> = entries_sorted.clone();
+        let mut queue: VecDeque<i32> = entries_sorted.iter().copied().collect();
         while let Some(s) = queue.pop_front() {
             let Some(node) = by_state.get(&s) else {
                 continue;
@@ -112,14 +121,20 @@ impl<'a> GraphIndex<'a> {
         Self {
             by_state,
             entries,
+            entry_list,
             order,
             pos,
         }
     }
 
-    /// Entry (root) states in display order.
+    /// Entry (root) states in display order (deduplicated, sorted by state id).
     pub fn entries(&self) -> &[i32] {
         &self.entries
+    }
+
+    /// Entries as `(key, start)` pairs, sorted by key — for entry-point pickers.
+    pub fn entry_list(&self) -> &[(String, i32)] {
+        &self.entry_list
     }
 
     /// The vertical layout order — the spine.
