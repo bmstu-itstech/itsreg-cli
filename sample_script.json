@@ -1,0 +1,130 @@
+{
+    "desc": "registration demo",
+    "entries": [
+        {
+            "key": "start",
+            "start": 0
+        }
+    ],
+    "nodes": [
+        {
+            "state": 0,
+            "title": "greeting",
+            "messages": [
+                {
+                    "text": "Hi! Choose:"
+                }
+            ],
+            "options": [
+                "register",
+                "help",
+                "again"
+            ],
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "register"
+                    },
+                    "to": 1,
+                    "operation": "save"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "help"
+                    },
+                    "to": 4,
+                    "operation": "noop"
+                },
+                {
+                    "predicate": {
+                        "type": "exact",
+                        "text": "again"
+                    },
+                    "to": 0,
+                    "operation": "noop"
+                }
+            ]
+        },
+        {
+            "state": 1,
+            "title": "ask_name",
+            "messages": [
+                {
+                    "text": "Name?"
+                }
+            ],
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^[A-Za-z ]+$"
+                    },
+                    "to": 2,
+                    "operation": "save"
+                }
+            ]
+        },
+        {
+            "state": 2,
+            "title": "ask_age",
+            "messages": [
+                {
+                    "text": "Age?"
+                }
+            ],
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "regex",
+                        "pattern": "^[0-9]+$"
+                    },
+                    "to": 3,
+                    "operation": "save"
+                }
+            ]
+        },
+        {
+            "state": 3,
+            "title": "done",
+            "messages": [
+                {
+                    "text": "Done!"
+                }
+            ],
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 0,
+                    "operation": "noop"
+                }
+            ]
+        },
+        {
+            "state": 4,
+            "title": "help",
+            "messages": [
+                {
+                    "text": "Help"
+                }
+            ],
+            "edges": [
+                {
+                    "predicate": {
+                        "type": "always"
+                    },
+                    "to": 0,
+                    "operation": "noop"
+                }
+            ]
+        },
+        {
+            "state": 5,
+            "title": "orphan",
+            "messages": []
+        }
+    ]
+}
