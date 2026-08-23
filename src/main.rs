@@ -2,6 +2,7 @@ use clap::CommandFactory;
 mod api;
 mod controller;
 mod error;
+mod graph;
 mod models;
 mod sources;
 mod views;
@@ -46,6 +47,24 @@ enum RunStatusCli {
     Stopped,
 }
 
+/// CLI mirror of [`crate::graph::GraphStyle`].
+#[derive(ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
+enum GraphStyleCli {
+    /// Nodes stacked along a vertical spine, cycles as side arcs.
+    Spine,
+    /// Classic DFS tree with `├──`/`└──` connectors.
+    Tree,
+}
+
+impl From<GraphStyleCli> for crate::graph::GraphStyle {
+    fn from(value: GraphStyleCli) -> Self {
+        match value {
+            GraphStyleCli::Spine => Self::Spine,
+            GraphStyleCli::Tree => Self::Tree,
+        }
+    }
+}
+
 impl From<RunStatusCli> for RunStatus {
     fn from(value: RunStatusCli) -> Self {
         match value {
@@ -76,7 +95,8 @@ struct Cli {
         short = 't',
         long,
         env = "TOKEN",
-        help = "JWT authentication token (can be set via TOKEN env var)"
+        default_value = "",
+        help = "JWT authentication token (can be set via TOKEN env var; not needed for `scripts graph`)"
     )]
     token: String,
 
@@ -166,6 +186,18 @@ enum ScriptsCommands {
         input: PathBuf,
     },
 
+    #[clap(about = "Render a script's state graph as a TUI / ASCII")]
+    Graph {
+        #[arg(long, short = 'i', help = "Path to the script file")]
+        input: PathBuf,
+
+        #[arg(short = 'r', long, help = "Render style", default_value = "spine")]
+        style: GraphStyleCli,
+
+        #[arg(long, help = "Print ASCII to stdout instead of launching the TUI")]
+        plain: bool,
+    },
+
     #[clap(alias = "ls")]
     #[clap(about = "List all available scripts")]
     List,
@@ -252,6 +284,14 @@ async fn main() -> ExitCode {
             ScriptsCommands::Create { input } => {
                 let src = FileSource::new(&input);
                 ctrl.create_script(&src).await
+            }
+            ScriptsCommands::Graph {
+                input,
+                style,
+                plain,
+            } => {
+                let src = FileSource::new(&input);
+                ctrl.show_graph(&src, style.into(), plain)
             }
             ScriptsCommands::List => ctrl.list_scripts().await,
             ScriptsCommands::Get { id } => ctrl.show_script(id).await,
